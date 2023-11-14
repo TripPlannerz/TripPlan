@@ -23,10 +23,14 @@
 </template>
 
 <script setup>
-import { toRaw, ref, onMounted } from "vue";
+import { toRaw, ref, onMounted, watch } from "vue";
 import { searchListStore } from "src/stores/example-store";
+import { searchKeywordStore } from "src/stores/searchkeyword";
+import { storeToRefs } from "pinia";
+
 const infowindow = ref(null);
 const store = searchListStore();
+const keystore = searchKeywordStore();
 
 let map;
 let ps;
@@ -66,9 +70,13 @@ onMounted(() => {
 });
 
 const searchPlaces = () => {
-  console.log(keyword.value, "DFSFSDFSDFDS");
-  ps.keywordSearch(keyword.value, placesSearchCB);
+  console.log(keystore.keywordlist, "DFSFSDFSDFDS");
+  // ps.keywordSearch(keystore.keywordlist, placesSearchCB);
 };
+
+watch(keystore.getKey, (newX) => {
+  console.log(`x값: ${newX}`);
+});
 
 const placesSearchCB = (data, status, pagination) => {
   //ㄴ나중에 status 처리 해야함

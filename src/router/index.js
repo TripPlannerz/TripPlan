@@ -34,7 +34,7 @@ const router = createRouter({
     },
     {
       path: "/test",
-      component: () => import("layouts/MapTest.vue"),
+      component: () => import("pages/MapPage.vue"),
     },
   ],
 });
