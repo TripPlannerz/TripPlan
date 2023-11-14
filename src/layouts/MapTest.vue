@@ -2,31 +2,21 @@
   <div>
     <div id="map"></div>
     <div class="button-group">
-      <button @click="changeSize(0)">Hide</button>
+      <!-- <button @click="changeSize(0)">Hide</button>
       <button @click="changeSize(400)">show</button>
       <button @click="displayMarker(markerPositions1)">marker set 1</button>
-      <button @click="displayMarker(markerPositions2)">marker set 2</button>
+      <button @click="displayMarker(markerPositions2)">marker set 2</button> -->
 
-      <!-- 
-      <button @click="displayMarker([])">marker set 3 (empty)</button> -->
-      <button @click="displayInfoWindow">infowindow</button>
-
-      <div>
-        <form @submit.prevent="searchPlaces">
-          키워드 :
-          <input type="text" v-model="keyword" id="keyword" size="15" />
-          <button type="submit">검색하기</button>
-        </form>
-      </div>
+      <!-- <button @click="displayMarker([])">marker set 3 (empty)</button>
+      <button @click="displayInfoWindow">infowindow</button> -->
     </div>
   </div>
 </template>
 
 <script setup>
-import { toRaw, ref, onMounted, watch } from "vue";
+import { toRaw, ref, onMounted, watch, watchEffect } from "vue";
 import { searchListStore } from "src/stores/example-store";
 import { searchKeywordStore } from "src/stores/searchkeyword";
-import { storeToRefs } from "pinia";
 
 const infowindow = ref(null);
 const store = searchListStore();
@@ -38,22 +28,6 @@ let ps;
 let markers = ref([]);
 
 const keyword = ref("이태원");
-
-const markerPositions1 = ref([
-  [33.452278, 126.567803],
-  [33.452671, 126.574792],
-  [33.451744, 126.572441],
-]);
-
-const markerPositions2 = ref([
-  [37.499590490909185, 127.0263723554437],
-  [37.499427948430814, 127.02794423197847],
-  [37.498553760499505, 127.02882598822454],
-  [37.497625593121384, 127.02935713582038],
-  [37.49629291770947, 127.02587362608637],
-  [37.49754540521486, 127.02546694890695],
-  [37.49646391248451, 127.02675574250912],
-]);
 
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
@@ -69,25 +43,31 @@ onMounted(() => {
   }
 });
 
+/////이거 삭제///
 const searchPlaces = () => {
   console.log(keystore.keywordlist, "DFSFSDFSDFDS");
-  // ps.keywordSearch(keystore.keywordlist, placesSearchCB);
+  ps.keywordSearch(keyword.value, placesSearchCB);
 };
 
-watch(keystore.getKey, (newX) => {
-  console.log(`x값: ${newX}`);
+watchEffect(() => {
+  console.log("myData 값이 변경되었습니다. 새로운 값:", keystore.keywordlist);
+  keyword.value = keystore.keywordlist;
+  console.log(keyword.value);
+
+  if (ps && ps.keywordSearch) {
+    ps.keywordSearch(keyword.value, placesSearchCB);
+  } else {
+    console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
+  }
+
+  // 추가로 필요한 로직 수행
 });
 
 const placesSearchCB = (data, status, pagination) => {
   //ㄴ나중에 status 처리 해야함
   console.log(data);
   store.savelist(data);
-  console.log(data[0].x, "+=======");
-  //////
-  //   for (let i = 0; i < data.length; i++) {
-  //     testarr.value.push([parseFloat(data[i].x), parseFloat(data[i].y)]);
-  //   }
-  //   console.log(testarr.value, "test");
+
   displayMarker(data);
 };
 
@@ -143,6 +123,9 @@ const displayMarker = (markerPositions) => {
     toRaw(map).setBounds(bounds);
   }
 };
+
+/////////////////지우면 안됨//////////////////////////
+
 // const displayInfoWindow = () => {
 //   if (this.infowindow && this.infowindow.getMap()) {
 //     //이미 생성한 인포윈도우가 있기 때문에 지도 중심좌표를 인포윈도우 좌표로 이동시킨다.
@@ -169,7 +152,7 @@ const displayMarker = (markerPositions) => {
 <style scoped>
 #map {
   width: 100%;
-  height: 700px;
+  height: 800px;
 }
 
 .button-group {

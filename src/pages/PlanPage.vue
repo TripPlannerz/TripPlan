@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import CalendarComponent from "../components/plan/CalendarComponent.vue";
+import MapPage from "./MapPage.vue";
 import { usePlanStore } from "../stores/plan";
 
 const planStore = usePlanStore();
@@ -42,8 +43,7 @@ const goPrevious = (currentStep) => {
       </q-step>
 
       <q-step :name="2" title="장소 선택" icon="place" :done="step > 2">
-        An ad group contains one or more ads which target a shared set of
-        keywords.
+        <MapPage />
       </q-step>
 
       <q-step :name="3" title="숙소 선택" icon="bed" :done="step > 3">

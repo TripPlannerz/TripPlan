@@ -3,15 +3,22 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { searchListStore } from "src/stores/example-store";
 import { searchKeywordStore } from "src/stores/searchkeyword";
+import { usePlanStore } from "src/stores/plan";
 
 const store = searchListStore();
 const keystore = searchKeywordStore();
+const planstore = usePlanStore();
 
 const leftDrawerOpen = ref(false);
 const keyword = ref("");
 const miniState = ref(false);
+const addList = ref([]);
 
 const router = useRouter();
+
+const addToAddList = (i) => {
+  addList.value.push(i);
+};
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -19,7 +26,7 @@ const toggleLeftDrawer = () => {
 };
 
 const searchPlaces = () => {
-  keystore.keywordlist(keyword.value);
+  keystore.savewordlist(keyword.value);
 };
 
 const drawerClick = (e) => {
@@ -44,30 +51,42 @@ onMounted(() => {
     side="left"
     show-if-above
   >
-    <!-- <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }"> -->
-    <q-item-label header> 리스트 </q-item-label>
-    <div>
-      <form @submit.prevent="searchPlaces">
-        <input type="text" v-model="keyword" id="keyword" size="15" />
-        <button type="submit">검색</button>
-      </form>
-    </div>
-    <q-list v-for="item in store.searchlist" :key="item.id">
-      <q-item>
-        <q-item-section>
-          <q-item-label>{{ item.place_name }}</q-item-label>
-          <q-item-label caption lines="3">{{ item.address_name }}</q-item-label>
-          <q-item-label caption>{{ item.phone }}</q-item-label>
-        </q-item-section>
+    <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+      <q-item-label header> 여행지명 </q-item-label>
+      <q-item-label header>
+        여행기간<br />
+        {{ planstore.dates.from }} - {{ planstore.dates.to }}
+      </q-item-label>
+      <div>
+        <form @submit.prevent="searchPlaces">
+          <input type="text" v-model="keyword" id="keyword" size="15" />
+          <button type="submit">검색</button>
+        </form>
+      </div>
+      <q-list v-for="item in store.searchlist" :key="item.id">
+        <q-item>
+          <q-item-section>
+            <q-item-label>{{ item.place_name }}</q-item-label>
+            <q-item-label caption lines="3">{{
+              item.address_name
+            }}</q-item-label>
+            <q-item-label caption>{{ item.phone }}</q-item-label>
+          </q-item-section>
 
-        <q-item-section side top>
-          <!-- <q-icon name="star" color="yellow" /> -->
-          <q-btn round color="primary" icon="add" />
-        </q-item-section>
-      </q-item>
+          <q-item-section side top>
+            <!-- <q-icon name="star" color="yellow" /> -->
+            <q-btn
+              @click="addToAddList(item)"
+              round
+              color="primary"
+              icon="add"
+            />
+          </q-item-section>
+        </q-item>
 
-      <q-separator spaced inset />
-    </q-list>
+        <q-separator spaced inset />
+      </q-list>
+    </q-scroll-area>
   </q-drawer>
 
   <q-drawer
@@ -77,10 +96,11 @@ onMounted(() => {
     :breakpoint="400"
     bordered
     side="right"
+    show-if-above
   >
     <!-- <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }"> -->
-    <q-item-label header> asdfasdfasdfasdf </q-item-label>
-    <q-list v-for="item in store.searchlist" :key="item.id">
+    <q-item-label header> 추가된 리스트 </q-item-label>
+    <q-list v-for="item in addList" :key="item.id">
       <q-item>
         <q-item-section>
           <q-item-label>{{ item.place_name }}</q-item-label>
