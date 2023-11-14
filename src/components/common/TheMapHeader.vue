@@ -17,7 +17,16 @@ const addList = ref([]);
 const router = useRouter();
 
 const addToAddList = (i) => {
+  keystore.saveaddlist([i.y, i.x]);
   addList.value.push(i);
+};
+
+const removeFromAddList = (i) => {
+  const index = addList.value.indexOf(i);
+  if (index !== -1) {
+    addList.value.splice(index, 1);
+    keystore.removeaddlist(index);
+  }
 };
 
 const toggleLeftDrawer = () => {
@@ -109,8 +118,13 @@ onMounted(() => {
         </q-item-section>
 
         <q-item-section side top>
-          <q-icon name="star" color="yellow" />
-          <!-- <q-btn round color="primary" icon="add" /> -->
+          <!-- <q-icon name="star" color="yellow" /> -->
+          <q-btn
+            @click="removeFromAddList(item)"
+            round
+            color="primary"
+            icon="home"
+          />
         </q-item-section>
       </q-item>
 

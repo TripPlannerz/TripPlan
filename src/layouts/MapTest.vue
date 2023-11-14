@@ -68,7 +68,7 @@ const placesSearchCB = (data, status, pagination) => {
   console.log(data);
   store.savelist(data);
 
-  displayMarker(data);
+  // displayMarker(data);
 };
 
 const initMap = () => {
@@ -99,11 +99,15 @@ const displayMarker = (markerPositions) => {
     markers.value.forEach((marker) => marker.setMap(null));
   }
 
-  const p = markerPositions.map((x) => console.log(x, x.x, "HELLO"));
+  const p = markerPositions.map((x) => console.log(x, x[0], "HELLO"));
 
   const positions = markerPositions.map(
-    (position) => new kakao.maps.LatLng(position.y, position.x)
+    (position) => new kakao.maps.LatLng(position[0], position[1])
   );
+
+  // const positions = markerPositions.map(
+  //   (position) => new kakao.maps.LatLng(position.y, position.x)
+  // );
   //console.log(positions, "POS");
 
   if (positions.length > 0) {
@@ -123,6 +127,21 @@ const displayMarker = (markerPositions) => {
     toRaw(map).setBounds(bounds);
   }
 };
+
+watchEffect(() => {
+  // keyword.value = keystore.saveaddlist;
+  // console.log(keyword.value);
+
+  // if (ps && ps.keywordSearch) {
+  //   ps.keywordSearch(keyword.value, placesSearchCB);
+  // } else {
+  //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
+  // }
+
+  displayMarker(keystore.addlist);
+
+  // 추가로 필요한 로직 수행
+});
 
 /////////////////지우면 안됨//////////////////////////
 
