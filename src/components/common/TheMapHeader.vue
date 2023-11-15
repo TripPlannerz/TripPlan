@@ -258,6 +258,7 @@ onMounted(() => {
 
         <q-tab-panel name="rooms">
           <!-- <div class="text-h6">Rooms</div> -->
+          <p>/ {{ planstore.days }}</p>
           <q-list v-for="item in addList" :key="item.id">
             <q-item v-if="item.savetype === 'rooms'">
               <q-item-section>
