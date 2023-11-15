@@ -20,10 +20,10 @@ const router = createRouter({
       // children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
     },
 
-    // {
-    //   path: "/test",
-    //   component: () => import("components/TestComponent.vue"),
-    // },
+    {
+      path: "/temp",
+      component: () => import("pages/tmpPage.vue"),
+    },
     {
       path: "/login",
       component: () => import("components/user/LoginComponent.vue"),

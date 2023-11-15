@@ -10,6 +10,7 @@ const keystore = searchKeywordStore();
 const planstore = usePlanStore();
 
 const leftDrawerOpen = ref(false);
+const rightDrawerOpen = ref(false);
 const keyword = ref("");
 const miniState = ref(false);
 const addList = ref([]);
@@ -40,6 +41,11 @@ const toggleLeftDrawer = () => {
   console.log("HERER");
 };
 
+const toggleRightDrawer = () => {
+  rightDrawerOpen.value = !rightDrawerOpen.value;
+  console.log("HERER");
+};
+
 const searchPlaces = () => {
   keystore.savewordlist(keyword.value);
 };
@@ -57,6 +63,21 @@ onMounted(() => {
 </script>
 
 <template>
+  <q-header class="bg-primary text-white">
+    <q-toolbar>
+      <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+
+      <q-toolbar-title>
+        <q-avatar>
+          <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+        </q-avatar>
+        Title
+      </q-toolbar-title>
+
+      <q-btn dense flat round icon="menu" @click="toggleRightDrawer" /> -->
+      <!-- <q-btn dense flat round icon="menu" @click="toggleRightDrawer" /> -->
+    </q-toolbar>
+  </q-header>
   <q-drawer
     v-model="leftDrawerOpen"
     @click.capture="drawerClick"
@@ -77,6 +98,7 @@ onMounted(() => {
           <input type="text" v-model="keyword" id="keyword" size="15" />
           <button type="submit">검색</button>
         </form>
+        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
       </div>
 
       <div class="q-pa-md q-gutter-sm">
@@ -119,11 +141,9 @@ onMounted(() => {
 
   <q-drawer
     v-model="rightDrawerOpen"
-    @click.capture="drawerClick"
-    :width="300"
-    :breakpoint="400"
     bordered
     side="right"
+    :push="true"
     show-if-above
   >
     <!-- <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }"> -->
@@ -153,6 +173,10 @@ onMounted(() => {
 </template>
 
 <style lang="css" scoped>
+.q-header {
+  visibility: hidden;
+  height: 1px;
+}
 .q-btn {
   margin: 10px;
 }

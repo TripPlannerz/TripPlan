@@ -5,7 +5,7 @@ import MapTest from "src/layouts/MapTest.vue";
 </script>
 
 <template>
-  <q-layout view="hhh Lpr lFr">
+  <q-layout view="hHh lpR fFf">
     <TheMapHeader />
 
     <q-page-container>
