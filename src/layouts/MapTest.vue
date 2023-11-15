@@ -17,14 +17,19 @@
 import { toRaw, ref, onMounted, watch, watchEffect } from "vue";
 import { searchListStore } from "src/stores/example-store";
 import { searchKeywordStore } from "src/stores/searchkeyword";
+import { usePlanStore } from "src/stores/plan";
 
 const infowindow = ref(null);
 const store = searchListStore();
 const keystore = searchKeywordStore();
+const destinationstore = usePlanStore();
+const x = ref("");
+const y = ref("");
 
 let map;
 let ps;
-
+let geocoder;
+let coords;
 let markers = ref([]);
 
 const keyword = ref("이태원");
@@ -32,6 +37,7 @@ const keyword = ref("이태원");
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
+    // settingInitialPos();
   } else {
     const script = document.createElement("script");
     /* global kakao */
@@ -42,6 +48,17 @@ onMounted(() => {
     document.head.appendChild(script);
   }
 });
+
+const initializeMap = () => {
+  const container = document.getElementById("map");
+  const options = {
+    center: new kakao.maps.LatLng(y.value, x.value),
+    level: 5,
+  };
+
+  map = new kakao.maps.Map(container, options);
+  ps = new kakao.maps.services.Places();
+};
 
 /////이거 삭제///
 const searchPlaces = () => {
@@ -73,17 +90,42 @@ const placesSearchCB = (data, status, pagination) => {
 
 const initMap = () => {
   const container = document.getElementById("map");
-  const options = {
-    center: new kakao.maps.LatLng(33.450701, 126.570667), //여기에서 앞페이지에 넘어온 지역의 위도 경도값 넣어줘야함.
-    level: 5,
-  };
+  // let x, y;
 
-  //지도 객체를 등록합니다.
-  //지도 객체는 반응형 관리 대상이 아니므로 initMap에서 선언합니다.
-  map = new kakao.maps.Map(container, options);
-  ps = new kakao.maps.services.Places();
-  //ps = new kakao.maps.services.Places();
-  //   console.log(map, "THIS");
+  geocoder = new kakao.maps.services.Geocoder();
+
+  if (geocoder && geocoder.addressSearch) {
+    geocoder.addressSearch(
+      destinationstore.places.region,
+      function (result, status) {
+        // 정상적으로 검색이 완료됐으면
+        if (status === kakao.maps.services.Status.OK) {
+          console.log("HERERE", status, result);
+          // coords =
+          //options.center = new kakao.maps.LatLng(result[0].y, result[0].x);
+          y.value = result[0].y;
+          x.value = result[0].x;
+          initializeMap();
+        }
+      }
+    );
+  } else {
+    console.error("geocoder 객체 또는 addressSearch 메소드정의 X.");
+  }
+
+  // console.log(y.value, x.value, "xyxyxy");
+  // const options = {
+  //   center: new kakao.maps.LatLng(y.value, x.value), //여기에서 앞페이지에 넘어온 지역의 위도 경도값 넣어줘야함.
+  //   //center: "",
+  //   level: 5,
+  // };
+  // console.log(options);
+  // //지도 객체를 등록합니다.
+  // //지도 객체는 반응형 관리 대상이 아니므로 initMap에서 선언합니다.
+  // map = new kakao.maps.Map(container, options);
+  // ps = new kakao.maps.services.Places();
+  // //ps = new kakao.maps.services.Places();
+  // //   console.log(map, "THIS");
 };
 
 const changeSize = (size) => {

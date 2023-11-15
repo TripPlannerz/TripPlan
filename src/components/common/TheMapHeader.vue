@@ -13,8 +13,14 @@ const leftDrawerOpen = ref(false);
 const keyword = ref("");
 const miniState = ref(false);
 const addList = ref([]);
+const filterList = ref(["맛집", "카페", "관광지"]);
 
 const router = useRouter();
+
+const filterSearch = (f) => {
+  console.log(planstore.places.region);
+  keystore.savewordlist(planstore.places.region + f); //지역명 + 필터 키워드 검색
+};
 
 const addToAddList = (i) => {
   keystore.saveaddlist([i.y, i.x]);
@@ -72,6 +78,19 @@ onMounted(() => {
           <button type="submit">검색</button>
         </form>
       </div>
+
+      <div class="q-pa-md q-gutter-sm">
+        <q-btn
+          v-for="f in filterList"
+          :key="`btn_${f}`"
+          color="primary"
+          :size="'md'"
+          :label="`${f}`"
+          outline
+          rounded
+          @click="filterSearch(f)"
+        />
+      </div>
       <q-list v-for="item in store.searchlist" :key="item.id">
         <q-item>
           <q-item-section>
@@ -123,7 +142,7 @@ onMounted(() => {
             @click="removeFromAddList(item)"
             round
             color="primary"
-            icon="home"
+            icon="delete"
           />
         </q-item-section>
       </q-item>
