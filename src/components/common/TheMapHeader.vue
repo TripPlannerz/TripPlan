@@ -14,6 +14,7 @@ const rightDrawerOpen = ref(false);
 const keyword = ref("");
 const miniState = ref(false);
 const addList = ref([]);
+const tab = ref("mails");
 const filterList = ref(["맛집", "카페", "관광지"]);
 
 const router = useRouter();
@@ -78,6 +79,7 @@ onMounted(() => {
       <!-- <q-btn dense flat round icon="menu" @click="toggleRightDrawer" /> -->
     </q-toolbar>
   </q-header>
+
   <q-drawer
     v-model="leftDrawerOpen"
     @click.capture="drawerClick"
@@ -101,41 +103,64 @@ onMounted(() => {
         <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
       </div>
 
-      <div class="q-pa-md q-gutter-sm">
-        <q-btn
-          v-for="f in filterList"
-          :key="`btn_${f}`"
-          color="primary"
-          :size="'md'"
-          :label="`${f}`"
-          outline
-          rounded
-          @click="filterSearch(f)"
-        />
-      </div>
-      <q-list v-for="item in store.searchlist" :key="item.id">
-        <q-item>
-          <q-item-section>
-            <q-item-label>{{ item.place_name }}</q-item-label>
-            <q-item-label caption lines="3">{{
-              item.address_name
-            }}</q-item-label>
-            <q-item-label caption>{{ item.phone }}</q-item-label>
-          </q-item-section>
+      <q-tabs
+        v-model="tab"
+        dense
+        class="text-grey"
+        active-color="primary"
+        indicator-color="primary"
+        narrow-indicator
+      >
+        <q-tab name="places" label="장소" />
+        <q-tab name="rooms" label="숙소" />
+      </q-tabs>
 
-          <q-item-section side top>
-            <!-- <q-icon name="star" color="yellow" /> -->
+      <q-separator />
+
+      <q-tab-panels v-model="tab">
+        <q-tab-panel name="places">
+          <div>
             <q-btn
-              @click="addToAddList(item)"
-              round
+              v-for="f in filterList"
+              :key="`btn_${f}`"
               color="primary"
-              icon="add"
+              :size="'md'"
+              :label="`${f}`"
+              outline
+              rounded
+              @click="filterSearch(f)"
             />
-          </q-item-section>
-        </q-item>
+          </div>
+          <q-list v-for="item in store.searchlist" :key="item.id">
+            <q-item>
+              <q-item-section>
+                <q-item-label>{{ item.place_name }}</q-item-label>
+                <q-item-label caption lines="3">{{
+                  item.address_name
+                }}</q-item-label>
+                <q-item-label caption>{{ item.phone }}</q-item-label>
+              </q-item-section>
 
-        <q-separator spaced inset />
-      </q-list>
+              <q-item-section side top>
+                <!-- <q-icon name="star" color="yellow" /> -->
+                <q-btn
+                  @click="addToAddList(item)"
+                  round
+                  color="primary"
+                  icon="add"
+                />
+              </q-item-section>
+            </q-item>
+
+            <q-separator spaced inset />
+          </q-list>
+        </q-tab-panel>
+
+        <q-tab-panel name="rooms">
+          <div class="text-h6">Rooms</div>
+          sdfasdfasdfasdf
+        </q-tab-panel>
+      </q-tab-panels>
     </q-scroll-area>
   </q-drawer>
 

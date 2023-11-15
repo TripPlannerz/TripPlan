@@ -48,7 +48,7 @@ const goPrevious = (currentStep) => {
         </q-step>
 
         <q-step :name="3" title="숙소 선택" icon="bed" :done="step > 3">
-          This step won't show up because it is disabled.
+          <MapPage />
         </q-step>
 
         <q-step :name="4" title="Create an ad" icon="settings">
