@@ -14,8 +14,9 @@ const rightDrawerOpen = ref(false);
 const keyword = ref("");
 const miniState = ref(false);
 const addList = ref([]);
-const tab = ref("mails");
+const tab = ref("places");
 const filterList = ref(["맛집", "카페", "관광지"]);
+const roomfilterList = ref(["호텔", "리조트", "모텔"]);
 
 const router = useRouter();
 
@@ -25,8 +26,10 @@ const filterSearch = (f) => {
 };
 
 const addToAddList = (i) => {
-  keystore.saveaddlist([i.y, i.x]);
+  keystore.saveaddlist([i.y, i.x, tab.value]);
+  i.savetype = tab.value;
   addList.value.push(i);
+  console.log(addList.value);
 };
 
 const removeFromAddList = (i) => {
@@ -90,7 +93,11 @@ onMounted(() => {
     show-if-above
   >
     <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-      <q-item-label header> 여행지명 </q-item-label>
+      <q-item-label header>
+        여행지
+        <div class="text-h6">{{ planstore.places.region }}</div>
+      </q-item-label>
+
       <q-item-label header>
         여행기간<br />
         {{ planstore.dates.from }} - {{ planstore.dates.to }}
@@ -158,7 +165,41 @@ onMounted(() => {
 
         <q-tab-panel name="rooms">
           <div class="text-h6">Rooms</div>
-          sdfasdfasdfasdf
+          <div>
+            <q-btn
+              v-for="f in roomfilterList"
+              :key="`btn_${f}`"
+              color="primary"
+              :size="'md'"
+              :label="`${f}`"
+              outline
+              rounded
+              @click="filterSearch(f)"
+            />
+          </div>
+          <q-list v-for="item in store.searchlist" :key="item.id">
+            <q-item>
+              <q-item-section>
+                <q-item-label>{{ item.place_name }}</q-item-label>
+                <q-item-label caption lines="3">{{
+                  item.address_name
+                }}</q-item-label>
+                <q-item-label caption>{{ item.phone }}</q-item-label>
+              </q-item-section>
+
+              <q-item-section side top>
+                <!-- <q-icon name="star" color="yellow" /> -->
+                <q-btn
+                  @click="addToAddList(item)"
+                  round
+                  color="primary"
+                  icon="add"
+                />
+              </q-item-section>
+            </q-item>
+
+            <q-separator spaced inset />
+          </q-list>
         </q-tab-panel>
       </q-tab-panels>
     </q-scroll-area>
@@ -171,29 +212,78 @@ onMounted(() => {
     :push="true"
     show-if-above
   >
-    <!-- <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }"> -->
-    <q-item-label header> 추가된 리스트 </q-item-label>
-    <q-list v-for="item in addList" :key="item.id">
-      <q-item>
-        <q-item-section>
-          <q-item-label>{{ item.place_name }}</q-item-label>
-          <q-item-label caption lines="3">{{ item.address_name }}</q-item-label>
-          <q-item-label caption>{{ item.phone }}</q-item-label>
-        </q-item-section>
+    <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+      <q-item-label header> 추가된 리스트 </q-item-label>
 
-        <q-item-section side top>
-          <!-- <q-icon name="star" color="yellow" /> -->
-          <q-btn
-            @click="removeFromAddList(item)"
-            round
-            color="primary"
-            icon="delete"
-          />
-        </q-item-section>
-      </q-item>
+      <q-tabs
+        v-model="tab"
+        dense
+        class="text-grey"
+        active-color="primary"
+        indicator-color="primary"
+        narrow-indicator
+      >
+        <q-tab name="places" label="장소" />
+        <q-tab name="rooms" label="숙소" />
+      </q-tabs>
 
-      <q-separator spaced inset />
-    </q-list>
+      <q-separator />
+
+      <q-tab-panels v-model="tab">
+        <q-tab-panel name="places">
+          <q-list v-for="item in addList" :key="item.id">
+            <q-item v-if="item.savetype === 'places'">
+              <q-item-section>
+                <q-item-label>{{ item.place_name }}</q-item-label>
+                <q-item-label caption lines="3">{{
+                  item.address_name
+                }}</q-item-label>
+                <q-item-label caption>{{ item.phone }}</q-item-label>
+              </q-item-section>
+
+              <q-item-section side top>
+                <!-- <q-icon name="star" color="yellow" /> -->
+                <q-btn
+                  @click="removeFromAddList(item)"
+                  round
+                  color="primary"
+                  icon="delete"
+                />
+              </q-item-section>
+            </q-item>
+
+            <q-separator v-if="item.savetype === 'places'" spaced inset />
+          </q-list>
+        </q-tab-panel>
+
+        <q-tab-panel name="rooms">
+          <!-- <div class="text-h6">Rooms</div> -->
+          <q-list v-for="item in addList" :key="item.id">
+            <q-item v-if="item.savetype === 'rooms'">
+              <q-item-section>
+                <q-item-label>{{ item.place_name }}</q-item-label>
+                <q-item-label caption lines="3">{{
+                  item.address_name
+                }}</q-item-label>
+                <q-item-label caption>{{ item.phone }}</q-item-label>
+              </q-item-section>
+
+              <q-item-section side top>
+                <!-- <q-icon name="star" color="yellow" /> -->
+                <q-btn
+                  @click="removeFromAddList(item)"
+                  round
+                  color="primary"
+                  icon="delete"
+                />
+              </q-item-section>
+            </q-item>
+
+            <q-separator v-if="item.savetype === 'rooms'" spaced inset />
+          </q-list>
+        </q-tab-panel>
+      </q-tab-panels>
+    </q-scroll-area>
   </q-drawer>
 </template>
 
