@@ -27,11 +27,13 @@ const filterSearch = (f) => {
 };
 
 const addToAddList = (i) => {
-  console.log(i, "THISTHISTHSITHISTHISTHI");
-  keystore.saveaddlist(i);
-  // keystore.saveaddlist([i.y, i.x, tab.value]);
-  i.savetype = tab.value;
-  addList.value.push(i);
+  if (i.category_group_code === "AD5" && keystore.getRooms === planstore.days) {
+    console.log("여행일 이상은 추가할 수 없습니다.");
+  } else {
+    keystore.saveaddlist(i);
+    i.savetype = tab.value;
+    addList.value.push(i);
+  }
 };
 
 const removeFromAddList = (i) => {
@@ -44,12 +46,10 @@ const removeFromAddList = (i) => {
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
-  console.log("HERER");
 };
 
 const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value;
-  console.log("HERER");
 };
 
 const searchPlaces = () => {
@@ -275,7 +275,7 @@ onMounted(() => {
 
         <q-tab-panel name="rooms">
           <!-- <div class="text-h6">Rooms</div> -->
-          <p>{{ currentRoomCnt.value }} / {{ planstore.days }}</p>
+          <p>{{ keystore.getRooms }} / {{ planstore.days }}</p>
           <q-list v-for="item in keystore.addlist" :key="item.id">
             <q-item v-if="item.category_group_code === 'AD5'">
               <q-item-section>

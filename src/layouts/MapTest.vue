@@ -141,7 +141,7 @@ const displayMarker = (markerPositions) => {
     markers.value.forEach((marker) => marker.setMap(null));
   }
 
-  const p = markerPositions.map((x) => console.log(x, x.x, "HELLO"));
+  //const p = markerPositions.map((x) => console.log(x, x.x, "HELLO"));
 
   const positions = markerPositions.map(
     (position) => new kakao.maps.LatLng(position.y, position.x)

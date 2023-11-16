@@ -8,7 +8,15 @@ export const searchKeywordStore = defineStore("searchkeyword", {
 
   getters: {
     getRooms() {
-      return this.addlist[3];
+      let cnt = 0;
+      this.addlist.map((i) => {
+        if (i.category_group_code === "AD5") {
+          cnt++;
+        }
+        //console.log(i.category_group_code, "PIPIPI");
+      });
+
+      return cnt;
     },
   },
 
