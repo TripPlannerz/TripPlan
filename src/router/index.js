@@ -21,8 +21,8 @@ const router = createRouter({
     },
 
     {
-      path: "/temp",
-      component: () => import("pages/tmpPage.vue"),
+      path: "/route",
+      component: () => import("pages/MapRoutePage.vue"),
     },
     {
       path: "/login",
