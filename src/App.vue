@@ -5,7 +5,8 @@ import MainLayout from "./layouts/MainLayout.vue";
 
 <template>
   <div id="app">
-    <MainLayout />
+    <router-view></router-view>
+    <!-- <MainLayout /> -->
   </div>
 </template>
 

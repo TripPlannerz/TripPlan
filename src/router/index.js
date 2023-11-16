@@ -20,10 +20,10 @@ const router = createRouter({
       // children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
     },
 
-    // {
-    //   path: "/test",
-    //   component: () => import("components/TestComponent.vue"),
-    // },
+    {
+      path: "/route",
+      component: () => import("pages/MapRoutePage.vue"),
+    },
     {
       path: "/login",
       component: () => import("components/user/LoginComponent.vue"),
@@ -34,7 +34,7 @@ const router = createRouter({
     },
     {
       path: "/test",
-      component: () => import("layouts/MapTest.vue"),
+      component: () => import("pages/MapPage.vue"),
     },
   ],
 });

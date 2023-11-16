@@ -6,6 +6,9 @@ import { searchListStore } from "src/stores/example-store";
 const store = searchListStore();
 
 const leftDrawerOpen = ref(false);
+const leftMiniOpen = ref(false);
+const miniState = ref(false);
+
 const router = useRouter();
 
 const toggleLeftDrawer = () => {
@@ -18,6 +21,13 @@ const loginFunction = () => {
 };
 const registerFunction = () => {
   router.push("/register");
+};
+
+const drawerClick = (e) => {
+  if (miniState.value) {
+    miniState.value = false;
+    e.stopPropagation();
+  }
 };
 
 onMounted(() => {
@@ -51,7 +61,15 @@ onMounted(() => {
     </q-toolbar>
   </q-header>
 
-  <q-drawer v-model="leftDrawerOpen" show-if-above side="left">
+  <q-drawer
+    v-model="leftDrawerOpen"
+    @click.capture="drawerClick"
+    :width="300"
+    :breakpoint="400"
+    bordered
+    side="left"
+  >
+    <!-- <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }"> -->
     <q-item-label header> 리스트 </q-item-label>
     <q-list v-for="item in store.searchlist" :key="item.id">
       <q-item>
@@ -64,6 +82,34 @@ onMounted(() => {
         <q-item-section side top>
           <!-- <q-icon name="star" color="yellow" /> -->
           <q-btn round color="primary" icon="add" />
+        </q-item-section>
+      </q-item>
+
+      <q-separator spaced inset />
+    </q-list>
+  </q-drawer>
+
+  <q-drawer
+    v-model="rightDrawerOpen"
+    @click.capture="drawerClick"
+    :width="300"
+    :breakpoint="400"
+    bordered
+    side="right"
+  >
+    <!-- <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }"> -->
+    <q-item-label header> asdfasdfasdfasdf </q-item-label>
+    <q-list v-for="item in store.searchlist" :key="item.id">
+      <q-item>
+        <q-item-section>
+          <q-item-label>{{ item.place_name }}</q-item-label>
+          <q-item-label caption lines="3">{{ item.address_name }}</q-item-label>
+          <q-item-label caption>{{ item.phone }}</q-item-label>
+        </q-item-section>
+
+        <q-item-section side top>
+          <q-icon name="star" color="yellow" />
+          <!-- <q-btn round color="primary" icon="add" /> -->
         </q-item-section>
       </q-item>
 

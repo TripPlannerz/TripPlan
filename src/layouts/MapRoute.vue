@@ -1,15 +1,8 @@
 <template>
   <div>
     <div id="map"></div>
-    <div class="button-group">
-      <!-- <button @click="changeSize(0)">Hide</button>
-      <button @click="changeSize(400)">show</button>
-      <button @click="displayMarker(markerPositions1)">marker set 1</button>
-      <button @click="displayMarker(markerPositions2)">marker set 2</button> -->
-
-      <!-- <button @click="displayMarker([])">marker set 3 (empty)</button>
-      <button @click="displayInfoWindow">infowindow</button> -->
-    </div>
+    <button @click="displayMarker(markerPositions1)">marker set 1</button>
+    <button @click="getCarDirection(markerPositions1)">marker set 1</button>
   </div>
 </template>
 
@@ -23,13 +16,21 @@ const infowindow = ref(null);
 const store = searchListStore();
 const keystore = searchKeywordStore();
 const destinationstore = usePlanStore();
+
+const routetest = ref([]);
+
+const markerPositions1 = ref([
+  [33.452278, 126.567803],
+  [33.452671, 126.574792],
+]);
+
 const x = ref("");
 const y = ref("");
 
 let map;
 let ps;
 let geocoder;
-let coords;
+let polyline;
 let markers = ref([]);
 
 const keyword = ref("이태원");
@@ -60,33 +61,27 @@ const initializeMap = () => {
   ps = new kakao.maps.services.Places();
 };
 
-/////이거 삭제///
-const searchPlaces = () => {
-  console.log(keystore.keywordlist, "DFSFSDFSDFDS");
-  ps.keywordSearch(keyword.value, placesSearchCB);
-};
+//   watchEffect(() => {
+//     console.log("myData 값이 변경되었습니다. 새로운 값:", keystore.keywordlist);
+//     keyword.value = keystore.keywordlist;
+//     console.log(keyword.value);
 
-watchEffect(() => {
-  console.log("myData 값이 변경되었습니다. 새로운 값:", keystore.keywordlist);
-  keyword.value = keystore.keywordlist;
-  console.log(keyword.value);
+//     if (ps && ps.keywordSearch) {
+//       ps.keywordSearch(keyword.value, placesSearchCB);
+//     } else {
+//       console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
+//     }
 
-  if (ps && ps.keywordSearch) {
-    ps.keywordSearch(keyword.value, placesSearchCB);
-  } else {
-    console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
-  }
+//     // 추가로 필요한 로직 수행
+//   });
 
-  // 추가로 필요한 로직 수행
-});
+//   const placesSearchCB = (data, status, pagination) => {
+//     //ㄴ나중에 status 처리 해야함
+//     console.log(data);
+//     store.savelist(data);
 
-const placesSearchCB = (data, status, pagination) => {
-  //ㄴ나중에 status 처리 해야함
-  console.log(data);
-  store.savelist(data);
-
-  // displayMarker(data);
-};
+//     // displayMarker(data);
+//   };
 
 const initMap = () => {
   const container = document.getElementById("map");
@@ -135,13 +130,29 @@ const changeSize = (size) => {
   toRaw(map).relayout();
 };
 
+const poly = (markerPositions) => {
+  console.log(markerPositions.value[0][0], "mp");
+  const positions = markerPositions.value.map(
+    (position) => new kakao.maps.LatLng(position[0], position[1])
+  );
+
+  polyline = new kakao.maps.Polyline({
+    path: positions, // 선을 구성하는 좌표배열 입니다
+    strokeWeight: 5, // 선의 두께 입니다
+    strokeColor: "#FFAE00", // 선의 색깔입니다
+    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+    strokeStyle: "solid", // 선의 스타일입니다
+  });
+  polyline.setMap(map);
+};
+
 const displayMarker = (markerPositions) => {
   //   console.log(markerPositions, "MARKER");
   if (markers.value.length > 0) {
     markers.value.forEach((marker) => marker.setMap(null));
   }
 
-  const p = markerPositions.map((x) => console.log(x, x[0], "HELLO"));
+  //const p = markerPositions.map((x) => console.log(x, x[0], x[1], "HELLO"));
 
   const positions = markerPositions.map(
     (position) => new kakao.maps.LatLng(position[0], position[1])
@@ -168,22 +179,86 @@ const displayMarker = (markerPositions) => {
 
     toRaw(map).setBounds(bounds);
   }
+  poly(markerPositions1);
 };
 
-watchEffect(() => {
-  // keyword.value = keystore.saveaddlist;
-  // console.log(keyword.value);
+async function getCarDirection(pos) {
+  const REST_API_KEY = "371a52c82d3c75a0d5afd8dc71a2c554";
+  // 호출방식의 URL을 입력합니다.
+  const url = "https://apis-navi.kakaomobility.com/v1/directions";
 
-  // if (ps && ps.keywordSearch) {
-  //   ps.keywordSearch(keyword.value, placesSearchCB);
-  // } else {
-  //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
-  // }
+  // 출발지(origin), 목적지(destination)의 좌표를 문자열로 변환합니다.
+  // const origin = `${pointObj.startPoint.lng},${pointObj.startPoint.lat}`;
+  // const destination = `${pointObj.endPoint.lng},${pointObj.endPoint.lat}`;
+  console.log(pos);
+  const origin = `${pos[0][1]},${pos[0][0]}`;
+  const destination = `${pos[1][1]},${pos[1][0]}`;
+  //   const origin = tmporigin.toString();
+  //   const destination = tmpdestination.toString();
+  console.log(pos[0]);
+  //   const origin = "127.111202,37.394912";
+  //   const destination = "127.111202,37.404912";
+  console.log(origin, "origin");
 
-  displayMarker(keystore.addlist);
+  // 요청 헤더를 추가합니다.
+  const headers = {
+    Authorization: `KakaoAK ${REST_API_KEY}`,
+    "Content-Type": "application/json",
+  };
 
-  // 추가로 필요한 로직 수행
-});
+  // 표3의 요청 파라미터에 필수값을 적어줍니다.
+  const queryParams = new URLSearchParams({
+    origin: origin,
+    destination: destination,
+  });
+
+  const requestUrl = `${url}?${queryParams}`; // 파라미터까지 포함된 전체 URL
+
+  try {
+    const response = await fetch(requestUrl, {
+      method: "GET",
+      headers: headers,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    data.routes[0].sections[0].roads.forEach((router) => {
+      router.vertexes.forEach((vertex, index) => {
+        if (index % 2 === 0) {
+          routetest.value.push([
+            router.vertexes[index + 1],
+            router.vertexes[index],
+          ]);
+        }
+      });
+    });
+
+    console.log(data);
+    console.log(routetest, "route TEST");
+    poly(routetest);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+// watchEffect(() => {
+//   // keyword.value = keystore.saveaddlist;
+//   // console.log(keyword.value);
+
+//   // if (ps && ps.keywordSearch) {
+//   //   ps.keywordSearch(keyword.value, placesSearchCB);
+//   // } else {
+//   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
+//   // }
+
+//   displayMarker(keystore.addlist);
+
+//   // 추가로 필요한 로직 수행
+// });
 
 /////////////////지우면 안됨//////////////////////////
 
