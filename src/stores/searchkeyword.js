@@ -7,8 +7,8 @@ export const searchKeywordStore = defineStore("searchkeyword", {
   }),
 
   getters: {
-    getKey(state) {
-      return state.keywordlist.value;
+    getRooms() {
+      return this.addlist[3];
     },
   },
 

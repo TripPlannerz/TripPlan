@@ -27,10 +27,11 @@ const filterSearch = (f) => {
 };
 
 const addToAddList = (i) => {
-  keystore.saveaddlist([i.y, i.x, tab.value]);
+  console.log(i, "THISTHISTHSITHISTHISTHI");
+  keystore.saveaddlist(i);
+  // keystore.saveaddlist([i.y, i.x, tab.value]);
   i.savetype = tab.value;
   addList.value.push(i);
-  console.log(addList.value);
 };
 
 const removeFromAddList = (i) => {
@@ -65,10 +66,10 @@ const drawerClick = (e) => {
 watchEffect(() => {
   let tmpcnt = 0;
   keystore.addlist.map((f) => {
-    console.log(f[2], "qwerty");
     if (f[2] === "rooms") {
       tmpcnt++;
     }
+    console.log(tmpcnt, "qwerty");
   });
   currentRoomCnt.value = tmpcnt;
 });
@@ -243,8 +244,8 @@ onMounted(() => {
 
       <q-tab-panels v-model="tab">
         <q-tab-panel name="places">
-          <q-list v-for="item in addList" :key="item.id">
-            <q-item v-if="item.savetype === 'places'">
+          <q-list v-for="item in keystore.addlist" :key="item.id">
+            <q-item v-if="item.category_group_code !== 'AD5'">
               <q-item-section>
                 <q-item-label>{{ item.place_name }}</q-item-label>
                 <q-item-label caption lines="3">{{
@@ -264,15 +265,19 @@ onMounted(() => {
               </q-item-section>
             </q-item>
 
-            <q-separator v-if="item.savetype === 'places'" spaced inset />
+            <q-separator
+              v-if="item.category_group_code !== 'AD5'"
+              spaced
+              inset
+            />
           </q-list>
         </q-tab-panel>
 
         <q-tab-panel name="rooms">
           <!-- <div class="text-h6">Rooms</div> -->
           <p>{{ currentRoomCnt.value }} / {{ planstore.days }}</p>
-          <q-list v-for="item in addList" :key="item.id">
-            <q-item v-if="item.savetype === 'rooms'">
+          <q-list v-for="item in keystore.addlist" :key="item.id">
+            <q-item v-if="item.category_group_code === 'AD5'">
               <q-item-section>
                 <q-item-label>{{ item.place_name }}</q-item-label>
                 <q-item-label caption lines="3">{{
@@ -292,7 +297,11 @@ onMounted(() => {
               </q-item-section>
             </q-item>
 
-            <q-separator v-if="item.savetype === 'rooms'" spaced inset />
+            <q-separator
+              v-if="item.category_group_code === 'AD5'"
+              spaced
+              inset
+            />
           </q-list>
         </q-tab-panel>
       </q-tab-panels>
