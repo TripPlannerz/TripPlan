@@ -2,6 +2,7 @@
 import stores from "src/stores";
 import { ref } from "vue";
 import { usePlanStore } from "../../stores/plan";
+import PlanPage from "src/pages/PlanPage.vue";
 
 const planStore = usePlanStore();
 
@@ -15,6 +16,25 @@ const setStartDateAfterToday = (dt) => {
 
 const setDates = (selected) => {
   planStore.dates = selected;
+  // 기간 계산
+  planStore.days = countDays();
+};
+
+const countDays = () => {
+  const start = new Date(
+    planStore.dates.from.slice(0, 4),
+    planStore.dates.from.slice(5, 7),
+    planStore.dates.from.slice(8, 10)
+  );
+  const end = new Date(
+    planStore.dates.to.slice(0, 4),
+    planStore.dates.to.slice(5, 7),
+    planStore.dates.to.slice(8, 10)
+  );
+  var diff = Math.abs(end.getTime() - start.getTime());
+  diff = Math.ceil(diff / (1000 * 3600 * 24));
+
+  return diff + 1;
 };
 </script>
 
@@ -27,9 +47,8 @@ const setDates = (selected) => {
         v-model="planStore.dates"
         :options="setStartDateAfterToday"
         range
-        title="여행 기간을 설정하세요."
-        subtitle="_"
         @update:model-value="setDates"
+        minimal
       />
     </div>
   </div>
