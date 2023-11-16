@@ -91,7 +91,7 @@ const initMap = () => {
 
   if (geocoder && geocoder.addressSearch) {
     geocoder.addressSearch(
-      destinationstore.places.region,
+      "제주", //destinationstore.places.region   이거 처음에는 비어있어서 단계별로 넘어가면 동작함
       function (result, status) {
         // 정상적으로 검색이 완료됐으면
         if (status === kakao.maps.services.Status.OK) {
@@ -152,7 +152,7 @@ const displayMarker = (markerPositions) => {
     markers.value.forEach((marker) => marker.setMap(null));
   }
 
-  //const p = markerPositions.map((x) => console.log(x, x[0], x[1], "HELLO"));
+  const p = markerPositions.map((x) => console.log(x, x[0], x[1], "HELLO"));
 
   const positions = markerPositions.map(
     (position) => new kakao.maps.LatLng(position[0], position[1])
@@ -179,11 +179,11 @@ const displayMarker = (markerPositions) => {
 
     toRaw(map).setBounds(bounds);
   }
-  poly(markerPositions1);
+  //poly(markerPositions1);
 };
 
 async function getCarDirection(pos) {
-  const REST_API_KEY = "371a52c82d3c75a0d5afd8dc71a2c554";
+  const REST_API_KEY = "49ee752b6adad5d571e167a5b530ab1f";
   // 호출방식의 URL을 입력합니다.
   const url = "https://apis-navi.kakaomobility.com/v1/directions";
 
