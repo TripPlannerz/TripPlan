@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { searchListStore } from "src/stores/example-store";
 import { searchKeywordStore } from "src/stores/searchkeyword";
@@ -14,6 +14,7 @@ const rightDrawerOpen = ref(false);
 const keyword = ref("");
 const miniState = ref(false);
 const addList = ref([]);
+const currentRoomCnt = ref(0);
 const tab = ref("places");
 const filterList = ref(["맛집", "카페", "관광지"]);
 const roomfilterList = ref(["호텔", "리조트", "모텔"]);
@@ -60,6 +61,17 @@ const drawerClick = (e) => {
     e.stopPropagation();
   }
 };
+
+watchEffect(() => {
+  let tmpcnt = 0;
+  keystore.addlist.map((f) => {
+    console.log(f[2], "qwerty");
+    if (f[2] === "rooms") {
+      tmpcnt++;
+    }
+  });
+  currentRoomCnt.value = tmpcnt;
+});
 
 onMounted(() => {
   console.log("SHSEHHSESEE");
@@ -258,7 +270,7 @@ onMounted(() => {
 
         <q-tab-panel name="rooms">
           <!-- <div class="text-h6">Rooms</div> -->
-          <p>/ {{ planstore.days }}</p>
+          <p>{{ currentRoomCnt.value }} / {{ planstore.days }}</p>
           <q-list v-for="item in addList" :key="item.id">
             <q-item v-if="item.savetype === 'rooms'">
               <q-item-section>
