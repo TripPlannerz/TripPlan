@@ -4,6 +4,9 @@ import { useRouter } from "vue-router";
 import { searchListStore } from "src/stores/example-store";
 import { searchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
 
 const store = searchListStore();
 const keystore = searchKeywordStore();
@@ -15,8 +18,9 @@ const keyword = ref("");
 const miniState = ref(false);
 const addList = ref([]);
 const currentRoomCnt = ref(0);
-const tab = ref("places");
-const filterList = ref(["맛집", "카페", "관광지"]);
+const tab = ref("places"); //d이건 오른쪽 탭
+const lefttab = ref("places"); //이게 왼쪽 탭 인데 일단 탭형식으로 남겨놓음
+const filterList = ref(["맛집", "카페", "관광지", "호텔", "리조트", "모텔"]);
 const roomfilterList = ref(["호텔", "리조트", "모텔"]);
 
 const router = useRouter();
@@ -28,6 +32,10 @@ const filterSearch = (f) => {
 
 const addToAddList = (i) => {
   if (i.category_group_code === "AD5" && keystore.getRooms === planstore.days) {
+    $q.notify({
+      type: "negative",
+      message: "여행일 이상은 추가할 수 없습니다.",
+    });
     console.log("여행일 이상은 추가할 수 없습니다.");
   } else {
     keystore.saveaddlist(i);
@@ -124,20 +132,20 @@ onMounted(() => {
       </div>
 
       <q-tabs
-        v-model="tab"
+        v-model="lefttab"
         dense
         class="text-grey"
         active-color="primary"
         indicator-color="primary"
         narrow-indicator
       >
-        <q-tab name="places" label="장소" />
-        <q-tab name="rooms" label="숙소" />
+        <q-tab name="places" label="장소 선택" />
+        <!-- <q-tab name="rooms" label="숙소" /> -->
       </q-tabs>
 
       <q-separator />
 
-      <q-tab-panels v-model="tab">
+      <q-tab-panels v-model="lefttab">
         <q-tab-panel name="places">
           <div>
             <q-btn
