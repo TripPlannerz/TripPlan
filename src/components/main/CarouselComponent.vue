@@ -1,5 +1,10 @@
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { usePlanStore } from "../../stores/plan";
+
+const router = useRouter();
+const planStore = usePlanStore();
 
 /* scroll style */
 const thumbStyle = {
@@ -47,9 +52,15 @@ const placeList = ref([
 
 /* =================== */
 
-const onPlaceClick = () => {
-  console.log(event.target);
-  // 클릭한 아이템 정보로 모달창 띄우기
+const searchPlace = (place) => {
+  console.log(place);
+
+  // 페이지 넘어가기 전 검색어 확인해서 넘겨야함
+  // planStore.region = inputPlace.value;
+  planStore.places.region = place;
+  console.log(planStore);
+  inputPlace.value = "";
+  router.push("/plan");
 };
 </script>
 
@@ -85,6 +96,7 @@ const onPlaceClick = () => {
             rounded
             bottom-slots
             v-model="inputPlace"
+            @keyup.enter="searchPlace(inputPlace)"
             label="여행지 검색"
             dark
           >
@@ -94,7 +106,7 @@ const onPlaceClick = () => {
             <template v-slot:append>
               <q-icon
                 name="search"
-                @click="inputPlace = ''"
+                @click="searchPlace(inputPlace)"
                 class="cursor-pointer"
               />
             </template>
@@ -106,7 +118,7 @@ const onPlaceClick = () => {
               <q-item
                 v-for="place in placeList"
                 :key="place.id"
-                @click.prevent="onPlaceClick"
+                @click="searchPlace(place.name)"
                 clickable
                 v-ripple
               >

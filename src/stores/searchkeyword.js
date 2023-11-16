@@ -2,13 +2,21 @@ import { defineStore } from "pinia";
 
 export const searchKeywordStore = defineStore("searchkeyword", {
   state: () => ({
-    keywordlist: ["강릉"],
+    keywordlist: [],
     addlist: [],
   }),
 
   getters: {
-    getKey(state) {
-      return state.keywordlist.value;
+    getRooms() {
+      let cnt = 0;
+      this.addlist.map((i) => {
+        if (i.category_group_code === "AD5") {
+          cnt++;
+        }
+        //console.log(i.category_group_code, "PIPIPI");
+      });
+
+      return cnt;
     },
   },
 

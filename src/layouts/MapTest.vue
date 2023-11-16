@@ -141,10 +141,10 @@ const displayMarker = (markerPositions) => {
     markers.value.forEach((marker) => marker.setMap(null));
   }
 
-  const p = markerPositions.map((x) => console.log(x, x[0], "HELLO"));
+  //const p = markerPositions.map((x) => console.log(x, x.x, "HELLO"));
 
   const positions = markerPositions.map(
-    (position) => new kakao.maps.LatLng(position[0], position[1])
+    (position) => new kakao.maps.LatLng(position.y, position.x)
   );
 
   // const positions = markerPositions.map(
@@ -181,6 +181,7 @@ watchEffect(() => {
   // }
 
   displayMarker(keystore.addlist);
+  console.log(keystore.addlist, "@@@@");
 
   // 추가로 필요한 로직 수행
 });
