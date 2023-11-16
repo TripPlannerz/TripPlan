@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 export const searchKeywordStore = defineStore("searchkeyword", {
   state: () => ({
-    keywordlist: ["강릉"],
+    keywordlist: [],
     addlist: [],
   }),
 
