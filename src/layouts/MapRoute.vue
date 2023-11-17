@@ -8,13 +8,13 @@
 
 <script setup>
 import { toRaw, ref, onMounted, watch, watchEffect } from "vue";
-import { searchListStore } from "src/stores/example-store";
-import { searchKeywordStore } from "src/stores/searchkeyword";
+import { useSearchListStore } from "src/stores/example-store";
+import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
 
 const infowindow = ref(null);
-const store = searchListStore();
-const keystore = searchKeywordStore();
+const store = useSearchListStore();
+const keystore = useSearchKeywordStore();
 const destinationstore = usePlanStore();
 
 const routetest = ref([]);
@@ -91,7 +91,8 @@ const initMap = () => {
 
   if (geocoder && geocoder.addressSearch) {
     geocoder.addressSearch(
-      destinationstore.places.region,
+      "제주",
+      // destinationstore.places.region,
       function (result, status) {
         // 정상적으로 검색이 완료됐으면
         if (status === kakao.maps.services.Status.OK) {
@@ -179,7 +180,7 @@ const displayMarker = (markerPositions) => {
 
     toRaw(map).setBounds(bounds);
   }
-  poly(markerPositions1);
+  // poly(markerPositions1);
 };
 
 async function getCarDirection(pos) {
