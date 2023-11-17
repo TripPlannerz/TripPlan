@@ -26,7 +26,11 @@ const roomfilterList = ref(["호텔", "리조트", "모텔"]);
 const router = useRouter();
 
 const filterSearch = (f) => {
-  console.log(planstore.places.region);
+  if (roomfilterList.value.includes(f)) {
+    tab.value = "rooms";
+  } else {
+    tab.value = "places";
+  }
   keystore.savewordlist(planstore.places.region + f); //지역명 + 필터 키워드 검색
 };
 
