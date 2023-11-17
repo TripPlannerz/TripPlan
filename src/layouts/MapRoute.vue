@@ -19,10 +19,7 @@ const destinationstore = usePlanStore();
 
 const routetest = ref([]);
 
-const markerPositions1 = ref([
-  [33.452278, 126.567803],
-  [33.452671, 126.574792],
-]);
+const markerPositions1 = ref(keystore.savedlist);
 
 const x = ref("");
 const y = ref("");
@@ -138,10 +135,10 @@ const poly = (markerPositions) => {
 
   polyline = new kakao.maps.Polyline({
     path: positions, // 선을 구성하는 좌표배열 입니다
-    strokeWeight: 5, // 선의 두께 입니다
-    strokeColor: "#FFAE00", // 선의 색깔입니다
-    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-    strokeStyle: "solid", // 선의 스타일입니다
+    strokeWeight: 5, // 선의 두께
+    strokeColor: "#FFAE00",
+    strokeOpacity: 0.7, // 선의 불투명도
+    strokeStyle: "solid", //  스타일
   });
   polyline.setMap(map);
 };
