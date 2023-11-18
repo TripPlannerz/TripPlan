@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const searchKeywordStore = defineStore("searchkeyword", {
+export const useSearchKeywordStore = defineStore("searchkeyword", {
   state: () => ({
     keywordlist: [],
     addlist: [],
@@ -103,6 +103,15 @@ export const searchKeywordStore = defineStore("searchkeyword", {
       if (i >= 0 && i < this.addlist.length) {
         this.addlist.splice(i, 1);
       }
+    },
+    splitList() {
+      this.selectedlist = this.addlist.map((item) => ({
+        place_name: item.place_name,
+        category_group_code: item.category_group_code,
+        id: item.id,
+        x: item.x,
+        y: item.y,
+      }));
     },
   },
 });

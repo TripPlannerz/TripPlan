@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { searchListStore } from "src/stores/example-store";
+import { useSearchListStore } from "src/stores/example-store";
 
-const store = searchListStore();
+const store = useSearchListStore();
 
 const leftDrawerOpen = ref(false);
 const leftMiniOpen = ref(false);

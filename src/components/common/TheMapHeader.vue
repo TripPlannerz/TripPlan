@@ -1,15 +1,15 @@
 <script setup>
 import { ref, onMounted, watchEffect } from "vue";
 import { useRouter } from "vue-router";
-import { searchListStore } from "src/stores/example-store";
-import { searchKeywordStore } from "src/stores/searchkeyword";
+import { useSearchListStore } from "src/stores/example-store";
+import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
 import { useQuasar } from "quasar";
 
 const $q = useQuasar();
 
-const store = searchListStore();
-const keystore = searchKeywordStore();
+const store = useSearchListStore();
+const keystore = useSearchKeywordStore();
 const planstore = usePlanStore();
 
 const leftDrawerOpen = ref(false);

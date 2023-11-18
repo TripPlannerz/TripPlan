@@ -15,13 +15,13 @@
 
 <script setup>
 import { toRaw, ref, onMounted, watch, watchEffect } from "vue";
-import { searchListStore } from "src/stores/example-store";
-import { searchKeywordStore } from "src/stores/searchkeyword";
+import { useSearchListStore } from "src/stores/example-store";
+import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
 
 const infowindow = ref(null);
-const store = searchListStore();
-const keystore = searchKeywordStore();
+const store = useSearchListStore();
+const keystore = useSearchKeywordStore();
 const destinationstore = usePlanStore();
 const x = ref("");
 const y = ref("");
