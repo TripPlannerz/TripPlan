@@ -1,15 +1,15 @@
 <script setup>
 import { ref, onMounted, watchEffect } from "vue";
 import { useRouter } from "vue-router";
-import { searchListStore } from "src/stores/example-store";
-import { searchKeywordStore } from "src/stores/searchkeyword";
+import { useSearchListStore } from "src/stores/example-store";
+import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
 import { useQuasar } from "quasar";
 
 const $q = useQuasar();
 
-const store = searchListStore();
-const keystore = searchKeywordStore();
+const store = useSearchListStore();
+const keystore = useSearchKeywordStore();
 const planstore = usePlanStore();
 
 const leftDrawerOpen = ref(false);
@@ -26,7 +26,11 @@ const roomfilterList = ref(["호텔", "리조트", "모텔"]);
 const router = useRouter();
 
 const filterSearch = (f) => {
-  console.log(planstore.places.region);
+  if (roomfilterList.value.includes(f)) {
+    tab.value = "rooms";
+  } else {
+    tab.value = "places";
+  }
   keystore.savewordlist(planstore.places.region + f); //지역명 + 필터 키워드 검색
 };
 

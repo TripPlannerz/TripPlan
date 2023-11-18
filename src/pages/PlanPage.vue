@@ -3,9 +3,13 @@ import { ref } from "vue";
 import CalendarComponent from "../components/plan/CalendarComponent.vue";
 import MapPage from "./MapPage.vue";
 import { usePlanStore } from "../stores/plan";
+import { useSearchKeywordStore } from "../stores/searchkeyword";
+import EditPlan from "src/components/plan/EditPlan.vue";
 
 const planStore = usePlanStore();
+const keyStore = useSearchKeywordStore();
 
+// CHECKLIST : default : 1
 const step = ref(1);
 
 const goNext = (currentStep) => {
@@ -20,6 +24,7 @@ const goNext = (currentStep) => {
     }
   } else if (currentStep === 2) {
     step.value = currentStep + 1;
+    // keyStore.splitList();
   }
 };
 
@@ -43,12 +48,22 @@ const goPrevious = (currentStep) => {
           <CalendarComponent />
         </q-step>
 
-        <q-step :name="2" title="장소 선택" icon="place" :done="step > 2">
+        <q-step
+          :name="2"
+          title="장소 및 숙소 선택"
+          icon="place"
+          :done="step > 2"
+        >
           <MapPage />
         </q-step>
 
-        <q-step :name="3" title="숙소 선택" icon="bed" :done="step > 3">
-          qwerty
+        <q-step
+          :name="3"
+          title="일정 편집"
+          icon="edit_calendar"
+          :done="step > 3"
+        >
+          <EditPlan />
         </q-step>
 
         <q-step :name="4" title="Create an ad" icon="settings">
@@ -80,8 +95,4 @@ const goPrevious = (currentStep) => {
   </div>
 </template>
 
-<style scoped>
-/* .container {
-  height: 100vh;
-} */
-</style>
+<style scoped></style>

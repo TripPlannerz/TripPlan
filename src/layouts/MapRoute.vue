@@ -2,27 +2,27 @@
   <div>
     <div id="map"></div>
     <button @click="displayMarker(markerPositions1)">marker set 1</button>
-    <button @click="getCarDirection(markerPositions1)">marker set 1</button>
+    <button @click="routeClick()">marker set 1</button>
+    <!-- <button @click="">marker set 1</button> -->
   </div>
 </template>
 
 <script setup>
 import { toRaw, ref, onMounted, watch, watchEffect } from "vue";
-import { searchListStore } from "src/stores/example-store";
-import { searchKeywordStore } from "src/stores/searchkeyword";
+import { useSearchListStore } from "src/stores/example-store";
+import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
 
 const infowindow = ref(null);
-const store = searchListStore();
-const keystore = searchKeywordStore();
+const store = useSearchListStore();
+const keystore = useSearchKeywordStore();
 const destinationstore = usePlanStore();
 
 const routetest = ref([]);
 
-const markerPositions1 = ref([
-  [33.452278, 126.567803],
-  [33.452671, 126.574792],
-]);
+const routecolor = ["#CC0000", "#6666CC", "#99FF00"];
+
+const markerPositions1 = ref(keystore.savedlist);
 
 const x = ref("");
 const y = ref("");
@@ -34,7 +34,9 @@ let polyline;
 let markers = ref([]);
 
 const keyword = ref("이태원");
-
+const tt = () => {
+  console.log(routetest, "tt");
+};
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
@@ -49,6 +51,26 @@ onMounted(() => {
     document.head.appendChild(script);
   }
 });
+
+// const routeClick = async () => {
+//   //console.log(keystore.savedlist.length, "LENGTH");
+//   for (let i = 0; i < keystore.savedlist.length - 1; i++) {
+//     console.log(`Before getCarDirection ${i}`);
+//     await getCarDirection(markerPositions1, i);
+//     console.log(`After getCarDirection ${i}`);
+//   }
+// };
+
+const routeClick = async () => {
+  for (let i = 0; i < keystore.savedlist.length; i++) {
+    routetest.value = [];
+    console.log(`Before getCarDirection ${i}`);
+    await getCarDirection(markerPositions1, i);
+    await poly(routetest.value, i);
+    console.log(`After getCarDirection ${i}`);
+  }
+  console.log(keystore.savedlist.length - 1, "LENGTH!@#$");
+};
 
 const initializeMap = () => {
   const container = document.getElementById("map");
@@ -91,7 +113,8 @@ const initMap = () => {
 
   if (geocoder && geocoder.addressSearch) {
     geocoder.addressSearch(
-      destinationstore.places.region,
+      "제주",
+      // destinationstore.places.region,
       function (result, status) {
         // 정상적으로 검색이 완료됐으면
         if (status === kakao.maps.services.Status.OK) {
@@ -123,25 +146,27 @@ const initMap = () => {
   // //   console.log(map, "THIS");
 };
 
-const changeSize = (size) => {
-  const container = document.getElementById("map");
-  container.style.width = `${size}px`;
-  container.style.height = `${size}px`;
-  toRaw(map).relayout();
-};
-
-const poly = (markerPositions) => {
-  console.log(markerPositions.value[0][0], "mp");
-  const positions = markerPositions.value.map(
-    (position) => new kakao.maps.LatLng(position[0], position[1])
+const poly = (markerPositions, dayidx) => {
+  console.log(
+    markerPositions,
+    // markerPositions[0].data[0],
+    "MPMPPMPMPMPMPMP"
+  );
+  // console.log(markerPositions.value[0][0], "mp");
+  const positions = markerPositions.map(
+    // (position) => new kakao.maps.LatLng(position[0], position[1])
+    (pos) => new kakao.maps.LatLng(pos.data[0], pos.data[1])
+    // console.log(pos.data[0], pos.data[1], "DATATATA");
   );
 
+  // let daycolorval = markerPositions[dayidx].day;
+  console.log("ROUTE COLORE", routecolor[dayidx], dayidx);
   polyline = new kakao.maps.Polyline({
     path: positions, // 선을 구성하는 좌표배열 입니다
-    strokeWeight: 5, // 선의 두께 입니다
-    strokeColor: "#FFAE00", // 선의 색깔입니다
-    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-    strokeStyle: "solid", // 선의 스타일입니다
+    strokeWeight: 5, // 선의 두께
+    strokeColor: routecolor[dayidx], //routecolor[dayidx],
+    strokeOpacity: 0.7, // 선의 불투명도
+    strokeStyle: "solid", //  스타일
   });
   polyline.setMap(map);
 };
@@ -152,11 +177,14 @@ const displayMarker = (markerPositions) => {
     markers.value.forEach((marker) => marker.setMap(null));
   }
 
-  //const p = markerPositions.map((x) => console.log(x, x[0], x[1], "HELLO"));
+  markerPositions = markerPositions.flat();
+
+  const p = markerPositions.map((x) => console.log(x, x.x, x.y, "DATA@@@@"));
 
   const positions = markerPositions.map(
-    (position) => new kakao.maps.LatLng(position[0], position[1])
+    (position) => new kakao.maps.LatLng(position.y, position.x)
   );
+  console.log(positions, "POPOSPOPSOPSOPSOPOS");
 
   // const positions = markerPositions.map(
   //   (position) => new kakao.maps.LatLng(position.y, position.x)
@@ -179,23 +207,56 @@ const displayMarker = (markerPositions) => {
 
     toRaw(map).setBounds(bounds);
   }
-  poly(markerPositions1);
+  // poly(markerPositions1);
 };
 
-async function getCarDirection(pos) {
-  const REST_API_KEY = "371a52c82d3c75a0d5afd8dc71a2c554";
+async function getCarDirection(pos, day) {
+  const REST_API_KEY = "49ee752b6adad5d571e167a5b530ab1f";
   // 호출방식의 URL을 입력합니다.
   const url = "https://apis-navi.kakaomobility.com/v1/directions";
 
   // 출발지(origin), 목적지(destination)의 좌표를 문자열로 변환합니다.
   // const origin = `${pointObj.startPoint.lng},${pointObj.startPoint.lat}`;
   // const destination = `${pointObj.endPoint.lng},${pointObj.endPoint.lat}`;
-  console.log(pos);
-  const origin = `${pos[0][1]},${pos[0][0]}`;
-  const destination = `${pos[1][1]},${pos[1][0]}`;
+  console.log(pos.value, "NAVI");
+  console.log(pos.value[0], "posday");
+  let lastidx = pos.value[day].length - 1;
+  console.log(lastidx, "lastidx");
+  const origin = `${pos.value[day][0].x},${pos.value[day][0].y}`;
+  const destination = `${pos.value[day][lastidx].x},${pos.value[day][lastidx].y}`;
+  const waypoints = ``; //여러개면 |로 이어서 할 것
   //   const origin = tmporigin.toString();
   //   const destination = tmpdestination.toString();
-  console.log(pos[0]);
+  console.log(lastidx, "lidx");
+  console.log(pos.value[day], "day");
+
+  const temp = pos.value[day].map((data) => [data.x, data.y]);
+
+  // Filter out elements with undefined values for x or y
+  const filteredTemp = temp.filter(
+    (data) => data[0] !== undefined && data[1] !== undefined
+  );
+
+  const formattedString = filteredTemp
+    .slice(1, -1)
+    .map((data) => `${data[0]},${data[1]}`)
+    .join("|");
+
+  console.log(temp, "temp");
+  console.log(formattedString, "formattedString");
+
+  console.log(
+    pos.value[day][0].place_name,
+    pos.value[day][0].y,
+    pos.value[day][0].x,
+    "day1 start"
+  );
+  console.log(
+    pos.value[day][lastidx].place_name,
+    pos.value[day][lastidx].y,
+    pos.value[day][lastidx].x,
+    "day 1 final"
+  );
   //   const origin = "127.111202,37.394912";
   //   const destination = "127.111202,37.404912";
   console.log(origin, "origin");
@@ -209,6 +270,7 @@ async function getCarDirection(pos) {
   // 표3의 요청 파라미터에 필수값을 적어줍니다.
   const queryParams = new URLSearchParams({
     origin: origin,
+    waypoints: formattedString,
     destination: destination,
   });
 
@@ -223,26 +285,29 @@ async function getCarDirection(pos) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
+    const newRoutes = [];
     const data = await response.json();
-
-    data.routes[0].sections[0].roads.forEach((router) => {
-      router.vertexes.forEach((vertex, index) => {
-        if (index % 2 === 0) {
-          routetest.value.push([
-            router.vertexes[index + 1],
-            router.vertexes[index],
-          ]);
-        }
+    console.log(data, "================");
+    let sectionlen = data.routes[0].sections.length;
+    for (let i = 0; i < sectionlen; i++) {
+      data.routes[0].sections[i].roads.forEach((router) => {
+        router.vertexes.forEach((vertex, index) => {
+          if (index % 2 === 0) {
+            newRoutes.push({
+              day: day,
+              data: [router.vertexes[index + 1], router.vertexes[index]],
+            });
+          }
+        });
       });
-    });
-
-    console.log(data);
-    console.log(routetest, "route TEST");
-    poly(routetest);
+    }
+    routetest.value = [...routetest.value, ...newRoutes];
+    console.log(routetest.value, "route TEST");
+    // poly(routetest);
   } catch (error) {
     console.error("Error:", error);
   }
+  console.log(`Exiting getCarDirection ${day}`);
 }
 
 // watchEffect(() => {

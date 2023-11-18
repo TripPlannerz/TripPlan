@@ -1,6 +1,6 @@
 <script setup>
-// import { searchListStore } from "src/stores/example-store";
-// const store = searchListStore();
+// import { useSearchListStore } from "src/stores/example-store";
+// const store = useSearchListStore();
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const searchListStore = defineStore("searchlist", {
+export const useSearchListStore = defineStore("searchlist", {
   state: () => ({
     searchlist: [],
   }),
