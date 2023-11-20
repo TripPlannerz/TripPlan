@@ -6,6 +6,7 @@ import { usePlanStore } from "../stores/plan";
 import { useSearchKeywordStore } from "../stores/searchkeyword";
 import EditPlan from "src/components/plan/EditPlan.vue";
 import MapRoute from "src/layouts/MapRoute.vue";
+import FinalPlanPage from "./FinalPlanPage.vue";
 
 const planStore = usePlanStore();
 const keyStore = useSearchKeywordStore();
@@ -67,8 +68,9 @@ const goPrevious = (currentStep) => {
           icon="edit_calendar"
           :done="step > 3"
         >
-          <EditPlan />
-          <MapRoute />
+          <!-- <EditPlan />
+          <MapRoute /> -->
+          <FinalPlanPage />
         </q-step>
 
         <q-step :name="4" title="Create an ad" icon="settings">

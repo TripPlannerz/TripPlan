@@ -133,10 +133,10 @@ const log = (event) => {
 
 <template>
   <div class="">
-    <div class="text-h3 q-ma-sm">{{ planStore.places.region }}</div>
+    <!-- <div class="text-h3 q-ma-sm">{{ planStore.places.region }}</div>
     <div class="text-h5">
       {{ planStore.dates.from }} - {{ planStore.dates.to }}
-    </div>
+    </div> -->
 
     <!-- places -->
     <div class="overlay-container">
