@@ -48,6 +48,7 @@ const routeDel = () => {
   // }
   polyDelete();
   console.log("지워!");
+  destinationstore.clearTripInfo();
   polyline = [];
   routeall.value = [];
 };
@@ -358,7 +359,7 @@ watchEffect(() => {
   // } else {
   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
   // }
-  destinationstore.clearTripInfo;
+
   displayMarker(keystore.savedlist);
   routeClick();
   routeDel();

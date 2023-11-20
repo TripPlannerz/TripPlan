@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUpdated } from "vue";
+import { ref, onMounted, onUpdated, watchEffect } from "vue";
 import { VueDraggableNext as draggable } from "vue-draggable-next";
 import { usePlanStore } from "../../stores/plan";
 import { useSearchKeywordStore } from "../../stores/searchkeyword";
@@ -88,7 +88,7 @@ const data = [
 const places = ref([]);
 
 const planData = ref([]);
-
+const infos = ref([]);
 onMounted(() => {
   places.value = [];
   // keyStore.addlist = data;
@@ -101,11 +101,18 @@ onMounted(() => {
       places.value.push(item);
     }
   });
+
   console.log(planData, "PD");
   // console.log(places);
   // console.log(accommodations);
 });
 
+watchEffect(() => {
+  infos.value = planStore.tripinfo;
+  console.log(infos.value, "SDJKFIJAEGFUIHN");
+
+  // 추가로 필요한 로직 수행
+});
 const enabled = ref(true);
 
 const dragging = ref(false);
@@ -165,8 +172,16 @@ const log = (event) => {
           v-for="day in planData"
           :key="planData.indexOf(day)"
         >
-          DAY {{ planData.indexOf(day) + 1 }}
-          <!-- {{ planData[planData.indexOf(day)] }} -->
+          DAY {{ planData.indexOf(day) + 1 }}<br />
+          <div v-if="infos.length !== 0">
+            택시요금 : {{ infos[planData.indexOf(day)].taxifare }}<br />
+            거리 :{{ infos[planData.indexOf(day)].distance / 1000 }} Km<br />
+            소요시간 :{{
+              Math.round(infos[planData.indexOf(day)].duration / 60)
+            }}
+            분 <br />
+          </div>
+
           <draggable
             class="dragArea list-group w-full"
             :list="planData[planData.indexOf(day)]"
