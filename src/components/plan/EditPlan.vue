@@ -95,13 +95,13 @@ onMounted(() => {
   keyStore.splitList();
 
   keyStore.selectedlist.map((item) => {
-    if (item.category_group_code === "FD6") {
-      places.value.push(item);
-    } else if (item.category_group_code === "AD5") {
+    if (item.category_group_code === "AD5") {
       planData.value.push([{ ...item }]);
+    } else {
+      places.value.push(item);
     }
   });
-  console.log(planData);
+  console.log(planData, "PD");
   // console.log(places);
   // console.log(accommodations);
 });
@@ -120,7 +120,7 @@ const checkMove = (event) => {
   console.log("checkMove", event.draggedContext);
   console.log("Future index: " + event.draggedContext.futureIndex);
 
-  keyStore.savedlist = planData;
+  keyStore.savedlist = planData.value;
   console.log("!!!!!!", keyStore.savedlist);
 };
 const log = (event) => {
@@ -139,50 +139,52 @@ const log = (event) => {
     </div>
 
     <!-- places -->
-    <div class="relative-position flex mx-10">
-      <div class="container">
-        <div>places</div>
-        <draggable
-          class="dragArea list-group w-full"
-          :list="places"
-          :group="{ name: 'people' }"
-          :sort="true"
-          @change="log"
-          :move="checkMove"
-        >
-          <q-card class="q-ma-sm" v-for="place in places" :key="place.id">
-            <q-card-section>
-              {{ place.place_name }}
-            </q-card-section>
-          </q-card>
-        </draggable>
-      </div>
-
-      <!-- accommodationsd -->
-      <div
-        class="container q-mx-lg q-my-sm"
-        v-for="day in planData"
-        :key="planData.indexOf(day)"
-      >
-        DAY {{ planData.indexOf(day) + 1 }}
-        <!-- {{ planData[planData.indexOf(day)] }} -->
-        <draggable
-          class="dragArea list-group w-full"
-          :list="planData[planData.indexOf(day)]"
-          group="people"
-          @change="log"
-          :move="checkMove"
-        >
-          <q-card
-            class="q-ma-sm"
-            v-for="plan in planData[planData.indexOf(day)]"
-            :key="planData[planData.indexOf(day)].indexOf(plan)"
+    <div class="overlay-container">
+      <div class="relative-position flex mx-10">
+        <div class="container">
+          <div>places</div>
+          <draggable
+            class="dragArea list-group w-full"
+            :list="places"
+            :group="{ name: 'people' }"
+            :sort="true"
+            @change="log"
+            :move="checkMove"
           >
-            <q-card-section>
-              {{ plan.place_name }}
-            </q-card-section>
-          </q-card>
-        </draggable>
+            <q-card class="q-ma-sm" v-for="place in places" :key="place.id">
+              <q-card-section>
+                {{ place.place_name }}
+              </q-card-section>
+            </q-card>
+          </draggable>
+        </div>
+
+        <!-- accommodationsd -->
+        <div
+          class="container q-mx-lg q-my-sm"
+          v-for="day in planData"
+          :key="planData.indexOf(day)"
+        >
+          DAY {{ planData.indexOf(day) + 1 }}
+          <!-- {{ planData[planData.indexOf(day)] }} -->
+          <draggable
+            class="dragArea list-group w-full"
+            :list="planData[planData.indexOf(day)]"
+            group="people"
+            @change="log"
+            :move="checkMove"
+          >
+            <q-card
+              class="q-ma-sm"
+              v-for="plan in planData[planData.indexOf(day)]"
+              :key="planData[planData.indexOf(day)].indexOf(plan)"
+            >
+              <q-card-section>
+                {{ plan.place_name }}
+              </q-card-section>
+            </q-card>
+          </draggable>
+        </div>
       </div>
     </div>
   </div>

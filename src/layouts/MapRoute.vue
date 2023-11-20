@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div id="map"></div>
-    <button @click="displayMarker(markerPositions1)">marker set 1</button>
+    <div id="map2"></div>
+    <button @click="displayMarker(keystore.getSavedList)">marker set 1</button>
     <button @click="routeClick()">marker set 1</button>
+    <button @click="routeDel()">marker set 1</button>
     <!-- <button @click="">marker set 1</button> -->
   </div>
 </template>
@@ -19,10 +20,12 @@ const keystore = useSearchKeywordStore();
 const destinationstore = usePlanStore();
 
 const routetest = ref([]);
+const routeall = ref([]);
 
 const routecolor = ["#CC0000", "#6666CC", "#99FF00"];
 
 const markerPositions1 = ref(keystore.savedlist);
+//const test = ref(keystore.getSavedList());
 
 const x = ref("");
 const y = ref("");
@@ -31,17 +34,28 @@ let map;
 let ps;
 let geocoder;
 let polyline;
+let polyarr = [];
 let markers = ref([]);
 
 const keyword = ref("이태원");
-const tt = () => {
-  console.log(routetest, "tt");
+const routeDel = () => {
+  // if (routeall.value) {
+  //   await polyDelete(routeall.value);
+  //   console.log("지워!");
+  //   routeall.value = [];
+  // }
+  polyDelete(routeall.value);
+  console.log("지워!");
+  polyline = [];
+  routeall.value = [];
 };
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
+    console.log("너 안만들었지????????????? ?");
     // settingInitialPos();
   } else {
+    console.log("OQOQOWQOQWOPEPOQWPOEOPJQWOJRGIUQHWA");
     const script = document.createElement("script");
     /* global kakao */
     script.onload = () => kakao.maps.load(initMap);
@@ -62,18 +76,28 @@ onMounted(() => {
 // };
 
 const routeClick = async () => {
+  console.log(keystore.savedlist.length - 1, "LENGTH!@#$");
+
+  // if (routeall.value) {
+  //   await polyDelete(routeall.value);
+  //   console.log("지워!");
+  //   routeall.value = [];
+  // }
   for (let i = 0; i < keystore.savedlist.length; i++) {
     routetest.value = [];
     console.log(`Before getCarDirection ${i}`);
-    await getCarDirection(markerPositions1, i);
+    console.log("keystore.getSavedList()", keystore.getSavedList);
+    await getCarDirection(keystore.getSavedList, i);
     await poly(routetest.value, i);
+    routeall.value.push(routetest.value);
     console.log(`After getCarDirection ${i}`);
   }
-  console.log(keystore.savedlist.length - 1, "LENGTH!@#$");
+
+  console.log(routeall.value, "routeall");
 };
 
 const initializeMap = () => {
-  const container = document.getElementById("map");
+  const container = document.getElementById("map2");
   const options = {
     center: new kakao.maps.LatLng(y.value, x.value),
     level: 5,
@@ -106,7 +130,7 @@ const initializeMap = () => {
 //   };
 
 const initMap = () => {
-  const container = document.getElementById("map");
+  const container = document.getElementById("map2");
   // let x, y;
 
   geocoder = new kakao.maps.services.Geocoder();
@@ -156,9 +180,9 @@ const poly = (markerPositions, dayidx) => {
   const positions = markerPositions.map(
     // (position) => new kakao.maps.LatLng(position[0], position[1])
     (pos) => new kakao.maps.LatLng(pos.data[0], pos.data[1])
-    // console.log(pos.data[0], pos.data[1], "DATATATA");
   );
 
+  console.log(positions, "DATATATA");
   // let daycolorval = markerPositions[dayidx].day;
   console.log("ROUTE COLORE", routecolor[dayidx], dayidx);
   polyline = new kakao.maps.Polyline({
@@ -168,7 +192,14 @@ const poly = (markerPositions, dayidx) => {
     strokeOpacity: 0.7, // 선의 불투명도
     strokeStyle: "solid", //  스타일
   });
+  polyarr.push(polyline);
   polyline.setMap(map);
+};
+
+const polyDelete = (markerPositions) => {
+  // markerPositions = markerPositions.flat();
+  polyarr.map((p) => p.setMap(null));
+  //polyline.setMap(null);
 };
 
 const displayMarker = (markerPositions) => {
@@ -218,19 +249,19 @@ async function getCarDirection(pos, day) {
   // 출발지(origin), 목적지(destination)의 좌표를 문자열로 변환합니다.
   // const origin = `${pointObj.startPoint.lng},${pointObj.startPoint.lat}`;
   // const destination = `${pointObj.endPoint.lng},${pointObj.endPoint.lat}`;
-  console.log(pos.value, "NAVI");
-  console.log(pos.value[0], "posday");
-  let lastidx = pos.value[day].length - 1;
+  console.log(pos, "NAVI");
+  console.log(pos[day], "posday");
+  let lastidx = pos[day].length - 1;
   console.log(lastidx, "lastidx");
-  const origin = `${pos.value[day][0].x},${pos.value[day][0].y}`;
-  const destination = `${pos.value[day][lastidx].x},${pos.value[day][lastidx].y}`;
+  const origin = `${pos[day][0].x},${pos[day][0].y}`;
+  const destination = `${pos[day][lastidx].x},${pos[day][lastidx].y}`;
   const waypoints = ``; //여러개면 |로 이어서 할 것
   //   const origin = tmporigin.toString();
   //   const destination = tmpdestination.toString();
   console.log(lastidx, "lidx");
-  console.log(pos.value[day], "day");
+  console.log(pos[day], "day");
 
-  const temp = pos.value[day].map((data) => [data.x, data.y]);
+  const temp = pos[day].map((data) => [data.x, data.y]);
 
   // Filter out elements with undefined values for x or y
   const filteredTemp = temp.filter(
@@ -245,18 +276,18 @@ async function getCarDirection(pos, day) {
   console.log(temp, "temp");
   console.log(formattedString, "formattedString");
 
-  console.log(
-    pos.value[day][0].place_name,
-    pos.value[day][0].y,
-    pos.value[day][0].x,
-    "day1 start"
-  );
-  console.log(
-    pos.value[day][lastidx].place_name,
-    pos.value[day][lastidx].y,
-    pos.value[day][lastidx].x,
-    "day 1 final"
-  );
+  // console.log(
+  //   pos.value[day][0].place_name,
+  //   pos.value[day][0].y,
+  //   pos.value[day][0].x,
+  //   "day1 start"
+  // );
+  // console.log(
+  //   pos.value[day][lastidx].place_name,
+  //   pos.value[day][lastidx].y,
+  //   pos.value[day][lastidx].x,
+  //   "day 1 final"
+  // );
   //   const origin = "127.111202,37.394912";
   //   const destination = "127.111202,37.404912";
   console.log(origin, "origin");
@@ -302,6 +333,7 @@ async function getCarDirection(pos, day) {
       });
     }
     routetest.value = [...routetest.value, ...newRoutes];
+
     console.log(routetest.value, "route TEST");
     // poly(routetest);
   } catch (error) {
@@ -351,7 +383,7 @@ async function getCarDirection(pos, day) {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#map {
+#map2 {
   width: 100%;
   height: 800px;
 }

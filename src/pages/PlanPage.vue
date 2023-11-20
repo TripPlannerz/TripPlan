@@ -5,6 +5,7 @@ import MapPage from "./MapPage.vue";
 import { usePlanStore } from "../stores/plan";
 import { useSearchKeywordStore } from "../stores/searchkeyword";
 import EditPlan from "src/components/plan/EditPlan.vue";
+import MapRoute from "src/layouts/MapRoute.vue";
 
 const planStore = usePlanStore();
 const keyStore = useSearchKeywordStore();
@@ -23,6 +24,9 @@ const goNext = (currentStep) => {
       console.log(planStore.dates);
     }
   } else if (currentStep === 2) {
+    step.value = currentStep + 1;
+    // keyStore.splitList();
+  } else if (currentStep === 3) {
     step.value = currentStep + 1;
     // keyStore.splitList();
   }
@@ -64,13 +68,11 @@ const goPrevious = (currentStep) => {
           :done="step > 3"
         >
           <EditPlan />
+          <MapRoute />
         </q-step>
 
         <q-step :name="4" title="Create an ad" icon="settings">
-          Try out different ad text to see what brings in the most customers,
-          and learn how to enhance your ads using features like ad extensions.
-          If you run into any problems with your ads, find out how to tell if
-          they're running and how to resolve approval issues.
+          <MapRoute />
         </q-step>
 
         <template v-slot:navigation>

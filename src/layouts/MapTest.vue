@@ -39,6 +39,7 @@ onMounted(() => {
     initMap();
     // settingInitialPos();
   } else {
+    console.log("맵 처음이잖아");
     const script = document.createElement("script");
     /* global kakao */
     script.onload = () => kakao.maps.load(initMap);
