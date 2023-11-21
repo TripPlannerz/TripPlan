@@ -1,53 +1,50 @@
 <script setup>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const $q = useQuasar();
+const router = useRouter();
 
-const name = ref(null);
-const age = ref(null);
-const accept = ref(true); //로그인 response
+const id = ref(null);
 const password = ref("");
+
+const accept = ref(true); //로그인 response
 const isPwd = ref(true);
 
 const onSubmit = () => {
   if (accept.value !== true) {
     $q.notify({
-      color: "red-5",
+      color: "negative",
       textColor: "white",
       icon: "warning",
       message: "You need to accept the license and terms first",
     });
   } else {
     $q.notify({
-      color: "green-4",
+      color: "positive",
       textColor: "white",
       icon: "cloud_done",
-      message: "Submitted",
+      message: "로그인 성공",
     });
-  }
-};
 
-const onReset = () => {
-  name.value = null;
-  age.value = null;
-  accept.value = false;
+    router.replace("/");
+  }
 };
 </script>
 
 <template>
-  <div class="q-pa-md" style="max-width: 400px">
-    <q-card class="my-card">
+  <div class="container">
+    <q-card class="fixed-center my-card" style="min-width: 400px">
       <q-card-section>
-        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+        <q-form @submit="onSubmit" class="q-gutter-sm">
           <q-input
             filled
-            v-model="name"
+            v-model="id"
             label="아이디"
-            hint="이메일 형식으로 입력해 주세요"
             lazy-rules
             :rules="[
-              (val) => (val && val.length > 0) || '아이디를 입력해 주세요',
+              (val) => (val && val.length > 0) || '아이디를 입력해 주세요.',
             ]"
           />
 
@@ -56,7 +53,6 @@ const onReset = () => {
             filled
             label="비밀번호"
             :type="isPwd ? 'password' : 'text'"
-            hint="비밀번호 보기"
           >
             <template v-slot:append>
               <q-icon
@@ -66,15 +62,23 @@ const onReset = () => {
               />
             </template>
           </q-input>
-
-          <div>
-            <q-btn label="Submit" type="submit" color="primary" />
+          <div class="float-left">
+            <q-toggle v-model="accept" label="아이디 저장" />
+          </div>
+          <div class="float-right">
             <q-btn
-              label="Reset"
-              type="reset"
+              class="q-mx-sm q-my-md"
+              label="회원가입"
+              type="button"
               color="primary"
               flat
-              class="q-ml-sm"
+              @click="router.push('/signin')"
+            />
+            <q-btn
+              class="q-mx-sm q-my-md"
+              label="로그인"
+              type="submit"
+              color="primary"
             />
           </div>
         </q-form>
@@ -84,11 +88,8 @@ const onReset = () => {
 </template>
 
 <style scoped>
-div {
+.container {
+  height: 100vh;
   text-align: center;
-  margin: 0 auto;
-}
-.q-btn {
-  margin-top: 30px;
 }
 </style>

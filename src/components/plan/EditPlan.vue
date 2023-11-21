@@ -95,10 +95,10 @@ onMounted(() => {
   keyStore.splitList();
 
   keyStore.selectedlist.map((item) => {
-    if (item.category_group_code === "FD6") {
-      places.value.push(item);
-    } else if (item.category_group_code === "AD5") {
+    if (item.category_group_code === "AD5") {
       planData.value.push([{ ...item }]);
+    } else {
+      places.value.push(item);
     }
   });
   console.log(planData);
@@ -189,11 +189,6 @@ const log = (event) => {
 </template>
 
 <style scoped>
-.q-card {
-  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07),
-    0 10px 20px -2px rgba(0, 0, 0, 0.04);
-}
-
 .container {
   background-color: #f7f8f9;
   border-radius: 0.5rem;

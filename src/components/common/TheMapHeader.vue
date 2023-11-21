@@ -129,6 +129,13 @@ onMounted(() => {
       </q-item-label>
       <div>
         <form @submit.prevent="searchPlaces">
+          <!-- TODO:  -->
+          <q-input v-model="search" filled type="search" hint="Search">
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+
           <input type="text" v-model="keyword" id="keyword" size="15" />
           <button type="submit">검색</button>
         </form>

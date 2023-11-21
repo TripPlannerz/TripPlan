@@ -55,11 +55,6 @@ const countDays = () => {
 </template>
 
 <style scoped>
-/* TODO : 이거 왜 안 먹혀..? 콘솔에서 먹히는데... */
-.q-date__header {
-  display: none;
-}
-
 .calendar {
   width: 50%;
   height: 60vh;
