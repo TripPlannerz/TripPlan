@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div id="map"></div>
-    <button @click="displayMarker(markerPositions1)">marker set 1</button>
+    <div id="map2"></div>
+    <button @click="displayMarker(keystore.getSavedList)">marker set 1</button>
     <button @click="routeClick()">marker set 1</button>
+    <button @click="routeDel()">marker set 1</button>
     <!-- <button @click="">marker set 1</button> -->
   </div>
 </template>
@@ -17,31 +18,47 @@ const infowindow = ref(null);
 const store = useSearchListStore();
 const keystore = useSearchKeywordStore();
 const destinationstore = usePlanStore();
+const customlist = ref([]);
 
 const routetest = ref([]);
+const routeall = ref([]);
+//const keyword = ref();
 
 const routecolor = ["#CC0000", "#6666CC", "#99FF00"];
 
 const markerPositions1 = ref(keystore.savedlist);
+//const test = ref(keystore.getSavedList());
 
 const x = ref("");
 const y = ref("");
 
 let map;
-let ps;
 let geocoder;
 let polyline;
+let ps;
+let polyarr = [];
 let markers = ref([]);
 
 const keyword = ref("이태원");
-const tt = () => {
-  console.log(routetest, "tt");
+const routeDel = () => {
+  // if (routeall.value) {
+  //   await polyDelete(routeall.value);
+  //   console.log("지워!");
+  //   routeall.value = [];
+  // }
+  polyDelete();
+  console.log("지워!");
+  destinationstore.clearTripInfo();
+  polyline = [];
+  routeall.value = [];
 };
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
+    console.log("너 안만들었지????????????? ?");
     // settingInitialPos();
   } else {
+    console.log("OQOQOWQOQWOPEPOQWPOEOPJQWOJRGIUQHWA");
     const script = document.createElement("script");
     /* global kakao */
     script.onload = () => kakao.maps.load(initMap);
@@ -62,18 +79,28 @@ onMounted(() => {
 // };
 
 const routeClick = async () => {
+  console.log(keystore.savedlist.length - 1, "LENGTH!@#$");
+
+  // if (routeall.value) {
+  //   await polyDelete(routeall.value);
+  //   console.log("지워!");
+  //   routeall.value = [];
+  // }
   for (let i = 0; i < keystore.savedlist.length; i++) {
     routetest.value = [];
     console.log(`Before getCarDirection ${i}`);
-    await getCarDirection(markerPositions1, i);
+    console.log("keystore.getSavedList()", keystore.getSavedList);
+    await getCarDirection(keystore.getSavedList, i);
     await poly(routetest.value, i);
+    routeall.value.push(routetest.value);
     console.log(`After getCarDirection ${i}`);
   }
-  console.log(keystore.savedlist.length - 1, "LENGTH!@#$");
+
+  console.log(routeall.value, "routeall");
 };
 
 const initializeMap = () => {
-  const container = document.getElementById("map");
+  const container = document.getElementById("map2");
   const options = {
     center: new kakao.maps.LatLng(y.value, x.value),
     level: 5,
@@ -106,14 +133,14 @@ const initializeMap = () => {
 //   };
 
 const initMap = () => {
-  const container = document.getElementById("map");
+  const container = document.getElementById("map2");
   // let x, y;
 
   geocoder = new kakao.maps.services.Geocoder();
 
   if (geocoder && geocoder.addressSearch) {
     geocoder.addressSearch(
-      "제주",
+      destinationstore.places.region,
       // destinationstore.places.region,
       function (result, status) {
         // 정상적으로 검색이 완료됐으면
@@ -147,16 +174,10 @@ const initMap = () => {
 };
 
 const poly = (markerPositions, dayidx) => {
-  console.log(
-    markerPositions,
-    // markerPositions[0].data[0],
-    "MPMPPMPMPMPMPMP"
-  );
   // console.log(markerPositions.value[0][0], "mp");
   const positions = markerPositions.map(
     // (position) => new kakao.maps.LatLng(position[0], position[1])
     (pos) => new kakao.maps.LatLng(pos.data[0], pos.data[1])
-    // console.log(pos.data[0], pos.data[1], "DATATATA");
   );
 
   // let daycolorval = markerPositions[dayidx].day;
@@ -168,7 +189,14 @@ const poly = (markerPositions, dayidx) => {
     strokeOpacity: 0.7, // 선의 불투명도
     strokeStyle: "solid", //  스타일
   });
+  polyarr.push(polyline);
   polyline.setMap(map);
+};
+
+const polyDelete = () => {
+  // markerPositions = markerPositions.flat();
+  polyarr.map((p) => p.setMap(null));
+  //polyline.setMap(null);
 };
 
 const displayMarker = (markerPositions) => {
@@ -218,19 +246,19 @@ async function getCarDirection(pos, day) {
   // 출발지(origin), 목적지(destination)의 좌표를 문자열로 변환합니다.
   // const origin = `${pointObj.startPoint.lng},${pointObj.startPoint.lat}`;
   // const destination = `${pointObj.endPoint.lng},${pointObj.endPoint.lat}`;
-  console.log(pos.value, "NAVI");
-  console.log(pos.value[0], "posday");
-  let lastidx = pos.value[day].length - 1;
+  console.log(pos, "NAVI");
+  console.log(pos[day], "posday");
+  let lastidx = pos[day].length - 1;
   console.log(lastidx, "lastidx");
-  const origin = `${pos.value[day][0].x},${pos.value[day][0].y}`;
-  const destination = `${pos.value[day][lastidx].x},${pos.value[day][lastidx].y}`;
+  const origin = `${pos[day][0].x},${pos[day][0].y}`;
+  const destination = `${pos[day][lastidx].x},${pos[day][lastidx].y}`;
   const waypoints = ``; //여러개면 |로 이어서 할 것
   //   const origin = tmporigin.toString();
   //   const destination = tmpdestination.toString();
   console.log(lastidx, "lidx");
-  console.log(pos.value[day], "day");
+  console.log(pos[day], "day");
 
-  const temp = pos.value[day].map((data) => [data.x, data.y]);
+  const temp = pos[day].map((data) => [data.x, data.y]);
 
   // Filter out elements with undefined values for x or y
   const filteredTemp = temp.filter(
@@ -242,24 +270,20 @@ async function getCarDirection(pos, day) {
     .map((data) => `${data[0]},${data[1]}`)
     .join("|");
 
-  console.log(temp, "temp");
-  console.log(formattedString, "formattedString");
-
-  console.log(
-    pos.value[day][0].place_name,
-    pos.value[day][0].y,
-    pos.value[day][0].x,
-    "day1 start"
-  );
-  console.log(
-    pos.value[day][lastidx].place_name,
-    pos.value[day][lastidx].y,
-    pos.value[day][lastidx].x,
-    "day 1 final"
-  );
+  // console.log(
+  //   pos.value[day][0].place_name,
+  //   pos.value[day][0].y,
+  //   pos.value[day][0].x,
+  //   "day1 start"
+  // );
+  // console.log(
+  //   pos.value[day][lastidx].place_name,
+  //   pos.value[day][lastidx].y,
+  //   pos.value[day][lastidx].x,
+  //   "day 1 final"
+  // );
   //   const origin = "127.111202,37.394912";
   //   const destination = "127.111202,37.404912";
-  console.log(origin, "origin");
 
   // 요청 헤더를 추가합니다.
   const headers = {
@@ -288,6 +312,22 @@ async function getCarDirection(pos, day) {
     const newRoutes = [];
     const data = await response.json();
     console.log(data, "================");
+
+    destinationstore.tripinfo.push({
+      taxifare: data.routes[0].summary.fare.taxi,
+      duration: data.routes[0].summary.duration,
+      distance: data.routes[0].summary.distance,
+    });
+
+    console.log(
+      data.routes[0].summary.fare.taxi,
+      data.routes[0].summary.duration,
+      data.routes[0].summary.distance,
+      "D====================DDDATATATA"
+    );
+    // taxifare.push(data.route[0].summary.fare.taxi);
+    // duration.push(data.route[0].summary.duration);
+    // distance.push(data.route[0].summary.distance);
     let sectionlen = data.routes[0].sections.length;
     for (let i = 0; i < sectionlen; i++) {
       data.routes[0].sections[i].roads.forEach((router) => {
@@ -302,6 +342,7 @@ async function getCarDirection(pos, day) {
       });
     }
     routetest.value = [...routetest.value, ...newRoutes];
+
     console.log(routetest.value, "route TEST");
     // poly(routetest);
   } catch (error) {
@@ -310,20 +351,20 @@ async function getCarDirection(pos, day) {
   console.log(`Exiting getCarDirection ${day}`);
 }
 
-// watchEffect(() => {
-//   // keyword.value = keystore.saveaddlist;
-//   // console.log(keyword.value);
+watchEffect(() => {
+  customlist.value = keystore.savedlist;
+  // console.log(customlist.value);
+  // if (ps && ps.keywordSearch) {
+  //   ps.keywordSearch(customlist.value, placesSearchCB);
+  // } else {
+  //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
+  // }
 
-//   // if (ps && ps.keywordSearch) {
-//   //   ps.keywordSearch(keyword.value, placesSearchCB);
-//   // } else {
-//   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
-//   // }
-
-//   displayMarker(keystore.addlist);
-
-//   // 추가로 필요한 로직 수행
-// });
+  displayMarker(keystore.savedlist);
+  routeClick();
+  routeDel();
+  // 추가로 필요한 로직 수행
+});
 
 /////////////////지우면 안됨//////////////////////////
 
@@ -351,7 +392,7 @@ async function getCarDirection(pos, day) {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#map {
+#map2 {
   width: 100%;
   height: 800px;
 }

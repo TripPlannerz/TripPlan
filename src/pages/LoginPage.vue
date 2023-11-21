@@ -1,7 +1,10 @@
 <script setup>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
+import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import { useMemberStore } from "../../stores/member";
+import { jwtDecode } from "jwt-decode";
 
 const $q = useQuasar();
 const router = useRouter();
@@ -11,6 +14,41 @@ const password = ref("");
 
 const accept = ref(true); //로그인 response
 const isPwd = ref(true);
+
+const router = useRouter();
+const memberStore = useMemberStore();
+const { isLogin } = storeToRefs(memberStore);
+const { userLogin, userLogout, getUserInfo } = memberStore;
+
+const loginUser = ref({
+  userId: "",
+  userPassword: "",
+});
+
+const login = async () => {
+  console.log(loginUser.value.userPassword);
+  await userLogin(loginUser.value);
+  let token = sessionStorage.getItem("accessToken");
+  if (isLogin) {
+    getUserInfo(token);
+  }
+  router.push("/plan");
+};
+
+const logout = async () => {
+  // console.log(loginUser.value.userPassword);
+  console.log(isLogin.value, "THIS IS LKGOINGIN COMPO");
+  if (isLogin) {
+    let token = sessionStorage.getItem("accessToken");
+    let decodeToken = jwtDecode(token);
+    await userLogout(decodeToken.userId);
+
+    router.push("/");
+  } else {
+    console.log("ERROR WITH LOGOUT");
+    router.push("/error");
+  }
+};
 
 const onSubmit = () => {
   if (accept.value !== true) {
@@ -30,6 +68,10 @@ const onSubmit = () => {
 
     router.replace("/");
   }
+const onReset = () => {
+  loginUser.value.userId = null;
+  loginUser.value.userPassword = null;
+  accept.value = false;
 };
 </script>
 
@@ -40,7 +82,7 @@ const onSubmit = () => {
         <q-form @submit="onSubmit" class="q-gutter-sm">
           <q-input
             filled
-            v-model="id"
+            v-model="loginUser.userId"
             label="아이디"
             lazy-rules
             :rules="[
@@ -49,7 +91,7 @@ const onSubmit = () => {
           />
 
           <q-input
-            v-model="password"
+            v-model="loginUser.userPassword"
             filled
             label="비밀번호"
             :type="isPwd ? 'password' : 'text'"
@@ -80,6 +122,7 @@ const onSubmit = () => {
               type="submit"
               color="primary"
             />
+            <q-btn label="Test" @click="logout" color="primary" />
           </div>
         </q-form>
       </q-card-section>

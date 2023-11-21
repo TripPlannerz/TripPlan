@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUpdated } from "vue";
+import { ref, onMounted, onUpdated, watchEffect } from "vue";
 import { VueDraggableNext as draggable } from "vue-draggable-next";
 import { usePlanStore } from "../../stores/plan";
 import { useSearchKeywordStore } from "../../stores/searchkeyword";
@@ -88,7 +88,7 @@ const data = [
 const places = ref([]);
 
 const planData = ref([]);
-
+const infos = ref([]);
 onMounted(() => {
   places.value = [];
   // keyStore.addlist = data;
@@ -101,11 +101,18 @@ onMounted(() => {
       places.value.push(item);
     }
   });
-  console.log(planData);
+
+  console.log(planData, "PD");
   // console.log(places);
   // console.log(accommodations);
 });
 
+watchEffect(() => {
+  infos.value = planStore.tripinfo;
+  console.log(infos.value, "SDJKFIJAEGFUIHN");
+
+  // 추가로 필요한 로직 수행
+});
 const enabled = ref(true);
 
 const dragging = ref(false);
@@ -120,7 +127,7 @@ const checkMove = (event) => {
   console.log("checkMove", event.draggedContext);
   console.log("Future index: " + event.draggedContext.futureIndex);
 
-  keyStore.savedlist = planData;
+  keyStore.savedlist = planData.value;
   console.log("!!!!!!", keyStore.savedlist);
 };
 const log = (event) => {
@@ -133,56 +140,66 @@ const log = (event) => {
 
 <template>
   <div class="">
-    <div class="text-h3 q-ma-sm">{{ planStore.places.region }}</div>
+    <!-- <div class="text-h3 q-ma-sm">{{ planStore.places.region }}</div>
     <div class="text-h5">
       {{ planStore.dates.from }} - {{ planStore.dates.to }}
-    </div>
+    </div> -->
 
     <!-- places -->
-    <div class="relative-position flex mx-10">
-      <div class="container">
-        <div>places</div>
-        <draggable
-          class="dragArea list-group w-full"
-          :list="places"
-          :group="{ name: 'people' }"
-          :sort="true"
-          @change="log"
-          :move="checkMove"
-        >
-          <q-card class="q-ma-sm" v-for="place in places" :key="place.id">
-            <q-card-section>
-              {{ place.place_name }}
-            </q-card-section>
-          </q-card>
-        </draggable>
-      </div>
-
-      <!-- accommodationsd -->
-      <div
-        class="container q-mx-lg q-my-sm"
-        v-for="day in planData"
-        :key="planData.indexOf(day)"
-      >
-        DAY {{ planData.indexOf(day) + 1 }}
-        <!-- {{ planData[planData.indexOf(day)] }} -->
-        <draggable
-          class="dragArea list-group w-full"
-          :list="planData[planData.indexOf(day)]"
-          group="people"
-          @change="log"
-          :move="checkMove"
-        >
-          <q-card
-            class="q-ma-sm"
-            v-for="plan in planData[planData.indexOf(day)]"
-            :key="planData[planData.indexOf(day)].indexOf(plan)"
+    <div class="overlay-container">
+      <div class="relative-position flex mx-10">
+        <div class="container">
+          <div>places</div>
+          <draggable
+            class="dragArea list-group w-full"
+            :list="places"
+            :group="{ name: 'people' }"
+            :sort="true"
+            @change="log"
+            :move="checkMove"
           >
-            <q-card-section>
-              {{ plan.place_name }}
-            </q-card-section>
-          </q-card>
-        </draggable>
+            <q-card class="q-ma-sm" v-for="place in places" :key="place.id">
+              <q-card-section>
+                {{ place.place_name }}
+              </q-card-section>
+            </q-card>
+          </draggable>
+        </div>
+
+        <!-- accommodationsd -->
+        <div
+          class="container q-mx-lg q-my-sm"
+          v-for="day in planData"
+          :key="planData.indexOf(day)"
+        >
+          DAY {{ planData.indexOf(day) + 1 }}<br />
+          <div v-if="infos.length !== 0">
+            택시요금 : {{ infos[planData.indexOf(day)].taxifare }}<br />
+            거리 :{{ infos[planData.indexOf(day)].distance / 1000 }} Km<br />
+            소요시간 :{{
+              Math.round(infos[planData.indexOf(day)].duration / 60)
+            }}
+            분 <br />
+          </div>
+
+          <draggable
+            class="dragArea list-group w-full"
+            :list="planData[planData.indexOf(day)]"
+            group="people"
+            @change="log"
+            :move="checkMove"
+          >
+            <q-card
+              class="q-ma-sm"
+              v-for="plan in planData[planData.indexOf(day)]"
+              :key="planData[planData.indexOf(day)].indexOf(plan)"
+            >
+              <q-card-section>
+                {{ plan.place_name }}
+              </q-card-section>
+            </q-card>
+          </draggable>
+        </div>
       </div>
     </div>
   </div>
