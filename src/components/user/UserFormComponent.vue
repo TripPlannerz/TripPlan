@@ -1,11 +1,12 @@
 <script setup>
 import { useQuasar } from "quasar";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { patterns } from "quasar";
 import { useRouter } from "vue-router";
 const { testPattern } = patterns;
 
 const router = useRouter();
+const props = defineProps({ type: String });
 
 const $q = useQuasar();
 
@@ -14,6 +15,10 @@ const name = ref(null);
 const email = ref(null);
 const password = ref("");
 const passwordCheck = ref("");
+
+onMounted(() => {
+  console.log(props.type);
+});
 
 const onSubmit = () => {
   $q.notify({
@@ -46,7 +51,6 @@ const onReset = () => {
               (val) => (val && val.length > 0) || '아이디를 입력하세요.',
             ]"
           />
-
           <q-input
             filled
             v-model="name"
@@ -97,7 +101,7 @@ const onReset = () => {
             />
             <q-btn
               class="q-mx-sm q-my-md"
-              label="가입"
+              :label="type === 'signin' ? '가입' : '수정'"
               type="submit"
               color="primary"
             />
