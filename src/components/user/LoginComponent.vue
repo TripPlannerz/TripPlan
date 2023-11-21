@@ -1,6 +1,10 @@
 <script setup>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import { useMemberStore } from "../../stores/member";
+import { jwtDecode } from "jwt-decode";
 
 const $q = useQuasar();
 
@@ -9,6 +13,41 @@ const age = ref(null);
 const accept = ref(true); //로그인 response
 const password = ref("");
 const isPwd = ref(true);
+
+const router = useRouter();
+const memberStore = useMemberStore();
+const { isLogin } = storeToRefs(memberStore);
+const { userLogin, userLogout } = memberStore;
+
+const loginUser = ref({
+  userId: "",
+  userPassword: "",
+});
+
+const login = async () => {
+  console.log(loginUser.value.userPassword);
+  await userLogin(loginUser.value);
+  let token = sessionStorage.getItem("accessToken");
+  // if (isLogin) {
+  //   getUserInfo(token);
+  // }
+  router.push("/");
+};
+
+const logout = async () => {
+  // console.log(loginUser.value.userPassword);
+  console.log(isLogin.value, "THIS IS LKGOINGIN COMPO");
+  if (isLogin) {
+    let token = sessionStorage.getItem("accessToken");
+    let decodeToken = jwtDecode(token);
+    await userLogout(decodeToken.userId);
+
+    router.push("/");
+  } else {
+    console.log("ERROR WITH LOGOUT");
+    router.push("/error");
+  }
+};
 
 const onSubmit = () => {
   if (accept.value !== true) {
@@ -29,8 +68,8 @@ const onSubmit = () => {
 };
 
 const onReset = () => {
-  name.value = null;
-  age.value = null;
+  loginUser.value.userId = null;
+  loginUser.value.userPassword = null;
   accept.value = false;
 };
 </script>
@@ -42,7 +81,7 @@ const onReset = () => {
         <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
           <q-input
             filled
-            v-model="name"
+            v-model="loginUser.userId"
             label="아이디"
             hint="이메일 형식으로 입력해 주세요"
             lazy-rules
@@ -52,7 +91,7 @@ const onReset = () => {
           />
 
           <q-input
-            v-model="password"
+            v-model="loginUser.userPassword"
             filled
             label="비밀번호"
             :type="isPwd ? 'password' : 'text'"
@@ -68,7 +107,7 @@ const onReset = () => {
           </q-input>
 
           <div>
-            <q-btn label="Submit" type="submit" color="primary" />
+            <q-btn label="Submit" @click="login" color="primary" />
             <q-btn
               label="Reset"
               type="reset"
@@ -76,6 +115,7 @@ const onReset = () => {
               flat
               class="q-ml-sm"
             />
+            <q-btn label="Test" @click="logout" color="primary" />
           </div>
         </q-form>
       </q-card-section>
