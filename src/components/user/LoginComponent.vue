@@ -17,7 +17,7 @@ const isPwd = ref(true);
 const router = useRouter();
 const memberStore = useMemberStore();
 const { isLogin } = storeToRefs(memberStore);
-const { userLogin, userLogout } = memberStore;
+const { userLogin, userLogout, getUserInfo } = memberStore;
 
 const loginUser = ref({
   userId: "",
@@ -28,10 +28,10 @@ const login = async () => {
   console.log(loginUser.value.userPassword);
   await userLogin(loginUser.value);
   let token = sessionStorage.getItem("accessToken");
-  // if (isLogin) {
-  //   getUserInfo(token);
-  // }
-  router.push("/");
+  if (isLogin) {
+    getUserInfo(token);
+  }
+  router.push("/plan");
 };
 
 const logout = async () => {
