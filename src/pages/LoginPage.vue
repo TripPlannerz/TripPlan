@@ -31,7 +31,7 @@ const login = async () => {
   if (isLogin) {
     getUserInfo(token);
   }
-  router.push("/plan");
+  router.push("/");
 };
 
 const logout = async () => {

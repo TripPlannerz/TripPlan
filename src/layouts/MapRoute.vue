@@ -115,6 +115,7 @@ const routeClick = async () => {
     routeall.value.push(routetest.value);
     console.log(`After getCarDirection ${i}`);
   }
+  await displayMarker(keystore.savedlist);
 
   console.log(routeall.value, "routeall");
 };
@@ -224,6 +225,7 @@ const displayMarker = (markerPositions) => {
   if (markers.value.length > 0) {
     markers.value.forEach((marker) => marker.setMap(null));
   }
+  console.log(markerPositions, "MP");
 
   markerPositions = markerPositions.flat();
 
