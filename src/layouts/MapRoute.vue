@@ -13,6 +13,7 @@ import { useSearchListStore } from "src/stores/example-store";
 import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
 import { useMemberStore } from "src/stores/member";
+import { storeToRefs } from "pinia";
 import { makePlan } from "src/apis/plan";
 
 const infowindow = ref(null);
@@ -25,6 +26,9 @@ const customlist = ref([]);
 const routetest = ref([]);
 const routeall = ref([]);
 //const keyword = ref();
+
+const { userInfo } = storeToRefs(memberstore);
+const { dates, places } = storeToRefs(destinationstore);
 
 const routecolor = ["#CC0000", "#6666CC", "#99FF00"];
 
@@ -43,19 +47,17 @@ let markers = ref([]);
 
 const keyword = ref("이태원");
 const plandata = ref({
-  region: destinationstore.places.region,
-  startDate: destinationstore.dates.from,
-  endDate: destinationstore.dates.to,
-  userId: memberstore.userInfo.userId,
-  userName: memberstore.userInfo.userName,
+  region: places.value.region,
+  startDate: dates.value.from,
+  endDate: dates.value.to,
+  userId: userInfo.value.userId,
+  userName: userInfo.value.userName,
 });
 
-const planPost = async (planparam) => {
-  await makePlan(
-    planparam,
-    (res) => console.log(res),
-    (e) => console.log(e)
-  );
+const planPost = async () => {
+  console.log(plandata.value, "PD");
+
+  await makePlan(plandata.value);
 };
 
 const routeDel = () => {
