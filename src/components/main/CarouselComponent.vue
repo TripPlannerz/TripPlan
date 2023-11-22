@@ -60,7 +60,7 @@ const searchPlace = (place) => {
   planStore.places.region = place;
   console.log(planStore);
   inputPlace.value = "";
-  router.push("/plan");
+  router.push({ name: "plan" });
 };
 </script>
 

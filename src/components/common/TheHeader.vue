@@ -17,10 +17,10 @@ const toggleLeftDrawer = () => {
 };
 
 const loginFunction = () => {
-  router.push("/login");
+  router.push({ name: "user-login" });
 };
 const registerFunction = () => {
-  router.push("/register");
+  router.push({ name: "user-register" });
 };
 
 const drawerClick = (e) => {
