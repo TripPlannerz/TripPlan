@@ -41,7 +41,7 @@ const router = createRouter({
     {
       path: "/test",
       name: "test",
-      component: () => import("pages/MapPage.vue"),
+      component: () => import("layouts/HistoryLayout.vue"),
     },
     {
       path: "/error",

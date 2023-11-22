@@ -1,9 +1,8 @@
 <template>
   <div>
     <div id="map2"></div>
-    <button @click="displayMarker(keystore.getSavedList)">marker set 1</button>
-    <button @click="routeClick()">marker set 1</button>
-    <button @click="routeDel()">marker set 1</button>
+
+    <button @click="planPost()">marker set 1</button>
     <!-- <button @click="">marker set 1</button> -->
   </div>
 </template>
@@ -13,16 +12,23 @@ import { toRaw, ref, onMounted, watch, watchEffect } from "vue";
 import { useSearchListStore } from "src/stores/example-store";
 import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
+import { useMemberStore } from "src/stores/member";
+import { storeToRefs } from "pinia";
+import { makePlan } from "src/apis/plan";
 
 const infowindow = ref(null);
 const store = useSearchListStore();
 const keystore = useSearchKeywordStore();
 const destinationstore = usePlanStore();
+const memberstore = useMemberStore();
 const customlist = ref([]);
 
 const routetest = ref([]);
 const routeall = ref([]);
 //const keyword = ref();
+
+const { userInfo } = storeToRefs(memberstore);
+const { dates, places } = storeToRefs(destinationstore);
 
 const routecolor = ["#CC0000", "#6666CC", "#99FF00"];
 
@@ -40,6 +46,20 @@ let polyarr = [];
 let markers = ref([]);
 
 const keyword = ref("이태원");
+const plandata = ref({
+  region: places.value.region,
+  startDate: dates.value.from,
+  endDate: dates.value.to,
+  userId: userInfo.value?.userId,
+  userName: userInfo.value?.userName,
+});
+
+const planPost = async () => {
+  console.log(plandata.value, "PD");
+
+  await makePlan(plandata.value);
+};
+
 const routeDel = () => {
   // if (routeall.value) {
   //   await polyDelete(routeall.value);
@@ -360,7 +380,7 @@ watchEffect(() => {
   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
   // }
 
-  displayMarker(keystore.savedlist);
+  // displayMarker(keystore.savedlist);
   routeClick();
   routeDel();
   // 추가로 필요한 로직 수행
