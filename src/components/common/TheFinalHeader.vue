@@ -103,6 +103,46 @@ const drawerClick = (e) => {
       </q-tab-panels>
     </q-scroll-area>
   </q-drawer>
+
+  <q-drawer
+    v-model="rightDrawerOpen"
+    @click.capture="drawerClick"
+    :width="400"
+    :breakpoint="400"
+    bordered
+    side="right"
+    show-if-above
+  >
+    <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+      <q-item-label header>
+        추가 여행지
+        <div class="text-h6">아 맞다 여기도 가야지</div>
+      </q-item-label>
+
+      <q-tabs
+        v-model="lefttab"
+        dense
+        class="text-grey"
+        active-color="primary"
+        indicator-color="primary"
+        narrow-indicator
+      >
+        <q-tab name="places" label="장소 선택" />
+        <!-- <q-tab name="rooms" label="숙소" /> -->
+      </q-tabs>
+
+      <q-separator />
+      <q-input v-model="keyword" filled type="search" hint="Search">
+        <template v-slot:append>
+          <q-icon name="search" @click="searchPlaces" />
+        </template>
+      </q-input>
+
+      <q-tab-panels v-model="lefttab">
+        <q-tab-panel name="places"> </q-tab-panel>
+      </q-tab-panels>
+    </q-scroll-area>
+  </q-drawer>
 </template>
 
 <style lang="css" scoped>

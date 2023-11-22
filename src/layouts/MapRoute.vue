@@ -131,27 +131,27 @@ const initializeMap = () => {
   ps = new kakao.maps.services.Places();
 };
 
-//   watchEffect(() => {
-//     console.log("myData 값이 변경되었습니다. 새로운 값:", keystore.keywordlist);
-//     keyword.value = keystore.keywordlist;
-//     console.log(keyword.value);
+// watchEffect(() => {
+//   console.log("myData 값이 변경되었습니다. 새로운 값:", keystore.keywordlist);
+//   keyword.value = keystore.keywordlist;
+//   console.log(keyword.value);
 
-//     if (ps && ps.keywordSearch) {
-//       ps.keywordSearch(keyword.value, placesSearchCB);
-//     } else {
-//       console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
-//     }
+//   // if (ps && ps.keywordSearch) {
+//   //   //ps.keywordSearch(keyword.value, placesSearchCB);
+//   // } else {
+//   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
+//   // }
 
-//     // 추가로 필요한 로직 수행
-//   });
+//   // 추가로 필요한 로직 수행
+// });
 
-//   const placesSearchCB = (data, status, pagination) => {
-//     //ㄴ나중에 status 처리 해야함
-//     console.log(data);
-//     store.savelist(data);
+// const placesSearchCB = (data, status, pagination) => {
+//   //ㄴ나중에 status 처리 해야함
+//   console.log(data);
+//   store.savelist(data);
 
-//     // displayMarker(data);
-//   };
+//   // displayMarker(data);
+// };
 
 const initMap = () => {
   const container = document.getElementById("map2");
@@ -374,7 +374,7 @@ async function getCarDirection(pos, day) {
 }
 
 watchEffect(() => {
-  customlist.value = keystore.savedlist;
+  // customlist.value = keystore.savedlist;
   // console.log(customlist.value);
   // if (ps && ps.keywordSearch) {
   //   ps.keywordSearch(customlist.value, placesSearchCB);
