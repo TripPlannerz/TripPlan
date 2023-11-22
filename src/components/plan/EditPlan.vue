@@ -102,6 +102,7 @@ onMounted(() => {
     }
   });
 
+  planData.value.push([]);
   console.log(planData, "PD");
   // console.log(places);
   // console.log(accommodations);
