@@ -50,8 +50,8 @@ const plandata = ref({
   region: places.value.region,
   startDate: dates.value.from,
   endDate: dates.value.to,
-  userId: userInfo.value.userId,
-  userName: userInfo.value.userName,
+  userId: userInfo.value?.userId,
+  userName: userInfo.value?.userName,
 });
 
 const planPost = async () => {
