@@ -3,7 +3,35 @@
     <div id="map2"></div>
 
     <button @click="planPost()">marker set 1</button>
+    <q-btn @click="isOpen = true">저장</q-btn>
     <!-- <button @click="">marker set 1</button> -->
+    <q-dialog v-model="isOpen" class="z-top">
+      <q-card class="fixed-center" style="min-width: 600px">
+        <q-card-section class="col items-center">
+          <div>
+            <q-btn icon="close" flat round dense v-close-popup />
+          </div>
+
+          <LoginComponent
+            v-if="!userInfo"
+            @onClose="isOpen = false"
+            @openRegister="openLogin = false"
+          />
+          <div v-else :type="'register'" @onClose="isOpen = false">
+            <div class="text-h5">제목을 입력하세요.</div>
+            <div class="flex">
+              <q-input v-model="text" :dense="dense" />
+              <q-btn>추가</q-btn>
+            </div>
+          </div>
+        </q-card-section>
+
+        <!-- <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="Turn on Wifi" color="primary" v-close-popup />
+        </q-card-actions> -->
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -15,6 +43,8 @@ import { usePlanStore } from "src/stores/plan";
 import { useMemberStore } from "src/stores/member";
 import { storeToRefs } from "pinia";
 import { makePlan } from "src/apis/plan";
+import LoginComponent from "../components/user/LoginComponent.vue";
+import UserFormComponent from "../components/user/UserFormComponent.vue";
 
 const infowindow = ref(null);
 const store = useSearchListStore();
@@ -53,6 +83,8 @@ const plandata = ref({
   userId: userInfo.value?.userId,
   userName: userInfo.value?.userName,
 });
+
+const isOpen = ref(false);
 
 const planPost = async () => {
   console.log(plandata.value, "PD");

@@ -44,7 +44,7 @@ const router = createRouter({
       component: () => import("layouts/HistoryLayout.vue"),
     },
     {
-      path: "/error",
+      path: "/:error",
       name: "error",
       component: () => import("pages/ErrorNotFound.vue"),
     },
