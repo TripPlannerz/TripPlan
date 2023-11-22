@@ -3,11 +3,10 @@ import { useQuasar } from "quasar";
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
-import { useMemberStore } from "../../stores/member";
+import { useMemberStore } from "../stores/member";
 import { jwtDecode } from "jwt-decode";
 
 const $q = useQuasar();
-const router = useRouter();
 
 const id = ref(null);
 const password = ref("");
@@ -68,6 +67,7 @@ const onSubmit = () => {
 
     router.replace("/");
   }
+};
 const onReset = () => {
   loginUser.value.userId = null;
   loginUser.value.userPassword = null;
@@ -121,6 +121,7 @@ const onReset = () => {
               label="로그인"
               type="submit"
               color="primary"
+              @click="login"
             />
             <q-btn label="Test" @click="logout" color="primary" />
           </div>

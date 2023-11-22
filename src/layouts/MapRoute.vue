@@ -1,9 +1,8 @@
 <template>
   <div>
     <div id="map2"></div>
-    <button @click="displayMarker(keystore.getSavedList)">marker set 1</button>
-    <button @click="routeClick()">marker set 1</button>
-    <button @click="routeDel()">marker set 1</button>
+
+    <button @click="planPost()">marker set 1</button>
     <!-- <button @click="">marker set 1</button> -->
   </div>
 </template>
@@ -13,11 +12,14 @@ import { toRaw, ref, onMounted, watch, watchEffect } from "vue";
 import { useSearchListStore } from "src/stores/example-store";
 import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
+import { useMemberStore } from "src/stores/member";
+import { makePlan } from "src/apis/plan";
 
 const infowindow = ref(null);
 const store = useSearchListStore();
 const keystore = useSearchKeywordStore();
 const destinationstore = usePlanStore();
+const memberstore = useMemberStore();
 const customlist = ref([]);
 
 const routetest = ref([]);
@@ -40,6 +42,22 @@ let polyarr = [];
 let markers = ref([]);
 
 const keyword = ref("이태원");
+const plandata = ref({
+  region: destinationstore.places.region,
+  startDate: destinationstore.dates.from,
+  endDate: destinationstore.dates.to,
+  userId: memberstore.userInfo.userId,
+  userName: memberstore.userInfo.userName,
+});
+
+const planPost = async (planparam) => {
+  await makePlan(
+    planparam,
+    (res) => console.log(res),
+    (e) => console.log(e)
+  );
+};
+
 const routeDel = () => {
   // if (routeall.value) {
   //   await polyDelete(routeall.value);

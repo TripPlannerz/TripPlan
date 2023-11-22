@@ -130,9 +130,9 @@ onMounted(() => {
       <div>
         <form @submit.prevent="searchPlaces">
           <!-- TODO:  -->
-          <q-input v-model="search" filled type="search" hint="Search">
+          <q-input v-model="keyword" filled type="search" hint="Search">
             <template v-slot:append>
-              <q-icon name="search" />
+              <q-icon name="search" @click="searchPlaces" />
             </template>
           </q-input>
 
