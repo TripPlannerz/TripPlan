@@ -21,4 +21,12 @@ async function logout(userid, success, fail) {
   await local.get(`/userApi/logout/${userid}`).then(success).catch(fail);
 }
 
-export { userConfirm, findById, tokenRegeneration, logout };
+async function register(user, success, fail) {
+  await local.post(`/userApi/register`, user).then(success).catch(fail);
+}
+
+async function modify(user, success, fail) {
+  await local.patch(`/userApi/user`, user).then(success).catch(fail);
+}
+
+export { userConfirm, findById, tokenRegeneration, logout, register, modify };
