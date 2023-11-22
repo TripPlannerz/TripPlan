@@ -1,26 +1,29 @@
-<script setup></script>
+<script setup>
+import ContentsCards from "../main/ContentsCards.vue";
+// import { ref, onMounted } from "vue";
+// import { getPlanList } from "src/apis/schedule";
+
+// const planlist = ref([]);
+// onMounted(async () => {
+//   const res = await getPlanList().then((res) => {
+//     console.log(res.data);
+//     planlist.value = res.data;
+//     return res.data;
+//   });
+//   await console.log(planlist.value);
+// });
+// console.log("BASKET : ", planlist.value);
+</script>
 
 <template>
   <div class="q-pa-md">
     <div class="text-h3 text-center q-my-lg">컨텐츠</div>
-    <div class="row justify-center q-gutter-sm">
-      <q-intersection
-        v-for="index in 10"
-        :key="index"
-        transition="scale"
-        class="example-item"
-      >
-        <q-card class="q-mx-xl">
-          <img src="https://cdn.quasar.dev/img/mountains.jpg" />
-
-          <q-card-section>
-            <div class="text-h6">Card #{{ index }}</div>
-            <div class="text-h6">여행지</div>
-            <div class="text-subtitle2">by John Doe</div>
-          </q-card-section>
-        </q-card>
-      </q-intersection>
-    </div>
+    <Suspense>
+      <template #default>
+        <ContentsCards />
+      </template>
+      <template #fallback> loading... </template>
+    </Suspense>
   </div>
 </template>
 
