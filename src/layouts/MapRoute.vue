@@ -380,7 +380,7 @@ watchEffect(() => {
   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
   // }
 
-  displayMarker(keystore.savedlist);
+  // displayMarker(keystore.savedlist);
   routeClick();
   routeDel();
   // 추가로 필요한 로직 수행

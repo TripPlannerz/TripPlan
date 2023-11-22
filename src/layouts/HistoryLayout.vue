@@ -6,15 +6,13 @@ import MapRoutePage from "src/pages/MapRoutePage.vue";
 <template>
   <div>
     sdf
-    <!-- <q-layout view="hHh lpR fFf">
+    <q-layout view="hHh lpR fFf">
       <TheFinalHeader />
 
       <q-page-container>
-       
-
         <MapRoutePage />
       </q-page-container>
-    </q-layout> -->
+    </q-layout>
   </div>
 </template>
 

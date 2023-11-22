@@ -3,11 +3,14 @@ import { ref, onMounted } from "vue";
 import { getPlanDetail, getPlanList, getSchedule } from "src/apis/schedule";
 import { usePlanStore } from "src/stores/plan";
 import { useSearchKeywordStore } from "src/stores/searchkeyword";
+import { useRouter } from "vue-router";
 
 const planstore = usePlanStore();
 const keystore = useSearchKeywordStore();
 
 const planlist = ref([]);
+
+const router = useRouter();
 
 onMounted(() => {
   const res = getPlanList().then((res) => {
@@ -38,7 +41,10 @@ const onCardClick = async (pid) => {
 
       //console.log(d.content.slice(1, d.content.length - 1).toString, "temp");
       //   keystore.savedlist.push(d.content.slice(1, d.content.length - 1));
-      keystore.savedlist.push(d.content);
+      let temp = JSON.parse(d.content);
+      console.log(temp, "TEMP");
+      keystore.savedlist.push(temp);
+      router.push("/test");
     });
 
     //console.log(temp, "SLICKE");
