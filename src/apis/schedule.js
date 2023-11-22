@@ -4,20 +4,25 @@ const local = localAxios();
 
 async function getPlanList() {
   return await local.get(`/planApi/plan`);
+  ////////////////지우지마///////
   // .then((r) => {
   //   console.log(r, "RR");
   //   return r;
   // })
   // .catch(()=>console.log("fail api"));
 }
+async function getMyPlanList(uid) {
+  return await local.get(`/planApi/plan/mypage/${uid}`);
+}
 
-// async function userConfirm(param, success, fail) {
-//   await local.post(`/userApi/login`, param).then(success).catch(fail);
-// }
-// async function findById(userid, success, fail) {
-//   local.defaults.headers["Authorization"] =
-//     sessionStorage.getItem("accessToken");
-//   await local.get(`/userApi/info/${userid}`).then(success).catch(fail);
-// }
+async function getPlanDetail(pid) {
+  return await local.get(`/planApi/plan/${pid}`);
+}
 
-export { getPlanList };
+async function getSchedule(pid) {
+  return await local.get(`/scheduleApi/schedule/${pid}`);
+  // .then((r) => console.log(r, "getSche"))
+  // .catch((e) => console.log(e));
+}
+
+export { getPlanList, getMyPlanList, getPlanDetail, getSchedule };

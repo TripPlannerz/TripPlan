@@ -7,6 +7,8 @@ export const usePlanStore = defineStore("plan", () => {
   const days = ref(3); // from to 값 date타입으로 바꿔서 날짜 저장 .  =======> 캘린더에서 day 값 저장된거 없나 ???????  일단 직접 저장해서 테스트 중
   const places = ref({ region: "제주" }); //이거 일단 속초로 해두었음 .  메인에서 클릭이나 검색한 지역 여기에 넣으면 됨.
   const tripinfo = ref([]);
+  const writer = ref("");
+  const views = ref(0);
 
   const clearTripInfo = () => {
     tripinfo.value = [];
@@ -21,6 +23,8 @@ export const usePlanStore = defineStore("plan", () => {
     dates,
     places,
     tripinfo,
+    writer,
+    views,
     clearTripInfo,
     listTripInfo,
   };

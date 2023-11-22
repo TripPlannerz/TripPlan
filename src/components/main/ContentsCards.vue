@@ -1,8 +1,14 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getPlanList } from "src/apis/schedule";
+import { getPlanDetail, getPlanList, getSchedule } from "src/apis/schedule";
+import { usePlanStore } from "src/stores/plan";
+import { useSearchKeywordStore } from "src/stores/searchkeyword";
+
+const planstore = usePlanStore();
+const keystore = useSearchKeywordStore();
 
 const planlist = ref([]);
+
 onMounted(() => {
   const res = getPlanList().then((res) => {
     console.log(res.data);
@@ -12,8 +18,35 @@ onMounted(() => {
   console.log(planlist.value);
 });
 
-const onCardClick = (pid) => {
+const onCardClick = async (pid) => {
   console.log(pid, "card clickckckck");
+  await getPlanDetail(pid).then((res) => {
+    console.log(res.data);
+    planstore.places.region = res.data.region;
+    planstore.dates.from = res.data.startDate;
+    planstore.dates.to = res.data.endDate;
+    planstore.writer = res.data.userName;
+    planstore.views = res.data.view;
+  });
+
+  await getSchedule(pid).then((res) => {
+    console.log(res.data, "RRRRRRRRRRRRR");
+    //let temp = res.data.content;
+
+    res.data.map((d) => {
+      console.log(d.content, "d.C");
+
+      //console.log(d.content.slice(1, d.content.length - 1).toString, "temp");
+      //   keystore.savedlist.push(d.content.slice(1, d.content.length - 1));
+      keystore.savedlist.push(d.content);
+    });
+
+    //console.log(temp, "SLICKE");
+    // temp = temp.substr(1, -1);
+    //keystore.savedlist = res.data;
+  });
+
+  //planstore.places.region = pid;
 };
 </script>
 

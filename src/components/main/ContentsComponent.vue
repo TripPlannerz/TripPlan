@@ -27,9 +27,4 @@ import ContentsCards from "../main/ContentsCards.vue";
   </div>
 </template>
 
-<style scoped>
-.example-item {
-  height: 390px;
-  width: 390px;
-}
-</style>
+<style scoped></style>
