@@ -44,7 +44,7 @@ const onCardClick = async (pid) => {
       let temp = JSON.parse(d.content);
       console.log(temp, "TEMP");
       keystore.savedlist.push(temp);
-      router.push("/test");
+      router.push({ name: "test" });
     });
 
     //console.log(temp, "SLICKE");

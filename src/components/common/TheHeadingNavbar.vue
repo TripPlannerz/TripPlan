@@ -27,7 +27,7 @@ const logout = async () => {
     await userLogout(decodeToken.userId);
 
     changeMenuState();
-    router.push("/");
+    router.push({ name: "main" });
   } else {
     console.log("ERROR WITH LOGOUT");
     router.push({ name: "error" });
