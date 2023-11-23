@@ -1,17 +1,19 @@
 <script setup>
 import { ref, onMounted, watchEffect } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useSearchListStore } from "src/stores/example-store";
 import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
 import { useQuasar } from "quasar";
 import EditPlan from "../plan/EditPlan.vue";
+import EditPlanHistory from "../plan/EditPlanHistory.vue";
 
 const $q = useQuasar();
 
 const store = useSearchListStore();
 const keystore = useSearchKeywordStore();
 const planstore = usePlanStore();
+const route = useRoute(); //이거 지워
 
 const leftDrawerOpen = ref(false);
 const rightDrawerOpen = ref(false);
@@ -29,6 +31,7 @@ const toggleLeftDrawer = () => {
 
 const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value;
+  console.log(keystore.clickflag, "GGG");
 };
 
 const searchPlaces = () => {
@@ -39,6 +42,21 @@ const drawerClick = (e) => {
   if (miniState.value) {
     miniState.value = false;
     e.stopPropagation();
+  }
+};
+
+const addToAddList = (i) => {
+  if (i.category_group_code === "AD5" && keystore.getRooms === planstore.days) {
+    $q.notify({
+      type: "negative",
+      message: "여행일 이상은 추가할 수 없습니다.",
+    });
+    console.log("여행일 이상은 추가할 수 없습니다.");
+  } else {
+    keystore.saveextralist(i);
+    console.log(i, "HERERERE");
+    //i.savetype = tab.value;
+    //addList.value.push(i);
   }
 };
 
@@ -97,7 +115,10 @@ const drawerClick = (e) => {
       <q-separator />
 
       <q-tab-panels v-model="lefttab">
-        <q-tab-panel name="places">
+        <q-tab-panel v-if="keystore.clickflag" name="places">
+          <EditPlanHistory />
+        </q-tab-panel>
+        <q-tab-panel v-else name="places">
           <EditPlan />
         </q-tab-panel>
       </q-tab-panels>
@@ -139,7 +160,31 @@ const drawerClick = (e) => {
       </q-input>
 
       <q-tab-panels v-model="lefttab">
-        <q-tab-panel name="places"> </q-tab-panel>
+        <q-tab-panel name="places">
+          <q-list v-for="item in store.searchlist" :key="item.id">
+            <q-item>
+              <q-item-section>
+                <q-item-label>{{ item.place_name }}</q-item-label>
+                <q-item-label caption lines="3">{{
+                  item.address_name
+                }}</q-item-label>
+                <q-item-label caption>{{ item.phone }}</q-item-label>
+              </q-item-section>
+
+              <q-item-section side top>
+                <!-- <q-icon name="star" color="yellow" /> -->
+                <q-btn
+                  @click="addToAddList(item)"
+                  round
+                  color="primary"
+                  icon="add"
+                />
+              </q-item-section>
+            </q-item>
+
+            <q-separator spaced inset />
+          </q-list>
+        </q-tab-panel>
       </q-tab-panels>
     </q-scroll-area>
   </q-drawer>
