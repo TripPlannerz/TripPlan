@@ -5,6 +5,8 @@ export const useSearchKeywordStore = defineStore("searchkeyword", {
     keywordlist: [],
     addlist: [],
     savedlist: [],
+    clickflag: false,
+    extralist: [],
   }),
 
   getters: {
@@ -23,6 +25,9 @@ export const useSearchKeywordStore = defineStore("searchkeyword", {
     getSavedList() {
       return this.savedlist;
     },
+    getExtraList() {
+      return this.extralist;
+    },
   },
 
   actions: {
@@ -31,6 +36,9 @@ export const useSearchKeywordStore = defineStore("searchkeyword", {
     },
     saveaddlist(a) {
       this.addlist.push(a);
+    },
+    saveextralist(e) {
+      this.extralist.push(e);
     },
     removeaddlist(i) {
       if (i >= 0 && i < this.addlist.length) {

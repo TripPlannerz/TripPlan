@@ -39,7 +39,7 @@ const countDays = () => {
 </script>
 
 <template>
-  <div>
+  <div class="">
     <div class="q-pa-md">
       <!-- TODO : 캘린더 두개 놓고 왼쪽에서 from, 오른쪽에서 to 설정 가능 하도록   -->
       <q-date

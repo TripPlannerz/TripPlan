@@ -17,7 +17,9 @@ import ContentsCards from "../main/ContentsCards.vue";
 
 <template>
   <div class="q-pa-md">
-    <div class="text-h3 text-center q-my-lg">컨텐츠</div>
+    <div class="text-h4 text-center q-my-lg">
+      다른 사람들의 계획을 확인해보세요.
+    </div>
     <Suspense>
       <template #default>
         <ContentsCards />

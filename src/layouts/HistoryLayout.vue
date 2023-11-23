@@ -1,6 +1,7 @@
 <script setup>
 import TheFinalHeader from "src/components/common/TheFinalHeader.vue";
-import MapRoutePage from "src/pages/MapRoutePage.vue";
+
+import MapRouteHistoryPage from "src/pages/MapRouteHistoryPage.vue";
 </script>
 
 <template>
@@ -10,7 +11,7 @@ import MapRoutePage from "src/pages/MapRoutePage.vue";
       <TheFinalHeader />
 
       <q-page-container>
-        <MapRoutePage />
+        <MapRouteHistoryPage />
       </q-page-container>
     </q-layout>
   </div>
