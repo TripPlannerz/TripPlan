@@ -108,6 +108,7 @@ onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
     console.log("너 안만들었지????????????? ?");
+    //displayMarker(keystore.savedlist);
     // settingInitialPos();
   } else {
     console.log("OQOQOWQOQWOPEPOQWPOEOPJQWOJRGIUQHWA");
@@ -147,7 +148,7 @@ const routeClick = async () => {
     routeall.value.push(routetest.value);
     console.log(`After getCarDirection ${i}`);
   }
-  await displayMarker(keystore.savedlist);
+  //await displayMarker(keystore.savedlist);
 
   //   console.log(routeall.value, "routeall");
 };
@@ -161,29 +162,31 @@ const initializeMap = () => {
 
   map = new kakao.maps.Map(container, options);
   ps = new kakao.maps.services.Places();
+  displayMarker(keystore.savedlist);
 };
 
-// watchEffect(() => {
-//   console.log("myData 값이 변경되었습니다. 새로운 값:", keystore.keywordlist);
-//   keyword.value = keystore.keywordlist;
-//   console.log(keyword.value);
+watchEffect(() => {
+  console.log("myData 값이 변경되었습니다. 새로운 값:", keystore.keywordlist);
+  keyword.value = keystore.keywordlist;
+  console.log(keyword.value);
 
-//   // if (ps && ps.keywordSearch) {
-//   //   //ps.keywordSearch(keyword.value, placesSearchCB);
-//   // } else {
-//   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
-//   // }
+  if (ps && ps.keywordSearch) {
+    ps.keywordSearch(keyword.value, placesSearchCB);
+  } else {
+    console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
+  }
 
-//   // 추가로 필요한 로직 수행
-// });
+  // 추가로 필요한 로직 수행
+});
 
-// const placesSearchCB = (data, status, pagination) => {
-//   //ㄴ나중에 status 처리 해야함
-//   console.log(data);
-//   store.savelist(data);
+const placesSearchCB = (data, status, pagination) => {
+  //ㄴ나중에 status 처리 해야함
+  console.log("AR INERN IEN ININIEIN INIENI NIN IN IIN");
+  console.log(data);
+  store.savelist(data);
 
-//   // displayMarker(data);
-// };
+  // displayMarker(data);
+};
 
 const initMap = () => {
   const container = document.getElementById("map2");
@@ -257,30 +260,37 @@ const displayMarker = (markerPositions) => {
   if (markers.value.length > 0) {
     markers.value.forEach((marker) => marker.setMap(null));
   }
-  console.log(markerPositions, "MP");
 
   markerPositions = markerPositions.flat();
-
-  const p = markerPositions.map((x) => console.log(x, x.x, x.y, "DATA@@@@"));
 
   const positions = markerPositions.map(
     (position) => new kakao.maps.LatLng(position.y, position.x)
   );
-  console.log(positions, "POPOSPOPSOPSOPSOPOS");
-
-  // const positions = markerPositions.map(
-  //   (position) => new kakao.maps.LatLng(position.y, position.x)
-  // );
-  //console.log(positions, "POS");
+  const infos = markerPositions.map((info) => {
+    return new kakao.maps.InfoWindow({
+      content: info.place_name,
+    });
+  });
 
   if (positions.length > 0) {
-    markers.value = positions.map(
-      (position) =>
-        new kakao.maps.Marker({
-          map: toRaw(map),
-          position,
-        })
-    );
+    markers.value = positions.map((position, i) => {
+      const marker = new kakao.maps.Marker({
+        map: toRaw(map),
+
+        position,
+      });
+      kakao.maps.event.addListener(
+        marker,
+        "mouseover",
+        makeOverListener(map, marker, infos[i])
+      );
+      kakao.maps.event.addListener(
+        marker,
+        "mouseout",
+        makeOutListener(infos[i])
+      );
+      return marker;
+    });
 
     const bounds = positions.reduce(
       (bounds, latlng) => bounds.extend(latlng),
@@ -292,6 +302,63 @@ const displayMarker = (markerPositions) => {
   // poly(markerPositions1);
 };
 
+const displayExtraMarker = (markerPositions) => {
+  //   console.log(markerPositions, "MARKER");
+  //   if (markers.value.length > 0) {
+  //     markers.value.forEach((marker) => marker.setMap(null));
+  //   }
+
+  const positions = markerPositions.map(
+    (position) => new kakao.maps.LatLng(position.y, position.x)
+  );
+  const infos = markerPositions.map((info) => {
+    return new kakao.maps.InfoWindow({
+      content: info.place_name,
+    });
+  });
+
+  if (positions.length > 0) {
+    markers.value = positions.map((position, i) => {
+      const marker = new kakao.maps.Marker({
+        map: toRaw(map),
+
+        position,
+      });
+      kakao.maps.event.addListener(
+        marker,
+        "mouseover",
+        makeOverListener(map, marker, infos[i])
+      );
+      kakao.maps.event.addListener(
+        marker,
+        "mouseout",
+        makeOutListener(infos[i])
+      );
+      return marker;
+    });
+
+    const bounds = positions.reduce(
+      (bounds, latlng) => bounds.extend(latlng),
+      new kakao.maps.LatLngBounds()
+    );
+
+    toRaw(map).setBounds(bounds);
+  }
+  // poly(markerPositions1);
+};
+const makeOverListener = (map, marker, infowindow) => {
+  return function () {
+    infowindow.open(map, marker);
+  };
+};
+
+// 인포윈도우를 닫는 클로저를 만드는 함수입니다
+const makeOutListener = (infowindow) => {
+  return function () {
+    infowindow.close();
+  };
+};
+
 async function getCarDirection(pos, day) {
   const REST_API_KEY = "49ee752b6adad5d571e167a5b530ab1f";
   // 호출방식의 URL을 입력합니다.
@@ -300,7 +367,7 @@ async function getCarDirection(pos, day) {
   // 출발지(origin), 목적지(destination)의 좌표를 문자열로 변환합니다.
   // const origin = `${pointObj.startPoint.lng},${pointObj.startPoint.lat}`;
   // const destination = `${pointObj.endPoint.lng},${pointObj.endPoint.lat}`;
-  console.log(pos, "NAVI");
+  console.log(pos, day, "NAVI");
   console.log(pos[day], "posday");
   let lastidx = pos[day].length - 1;
   console.log(lastidx, "lastidx");
@@ -318,11 +385,12 @@ async function getCarDirection(pos, day) {
   const filteredTemp = temp.filter(
     (data) => data[0] !== undefined && data[1] !== undefined
   );
-
+  console.log(filteredTemp, "filterTemp");
   const formattedString = filteredTemp
     .slice(1, -1)
     .map((data) => `${data[0]},${data[1]}`)
     .join("|");
+  console.log(formattedString, "formattedString");
 
   // console.log(
   //   pos.value[day][0].place_name,
@@ -406,15 +474,17 @@ async function getCarDirection(pos, day) {
 }
 
 watchEffect(() => {
-  // customlist.value = keystore.savedlist;
-  // console.log(customlist.value);
-  // if (ps && ps.keywordSearch) {
-  //   ps.keywordSearch(customlist.value, placesSearchCB);
-  // } else {
-  //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
-  // }
+  //   customlist.value = keystore.savedlist;
+  //   console.log(customlist.value);
+  //   if (ps && ps.keywordSearch) {
+  //     ps.keywordSearch(customlist.value, placesSearchCB);
+  //   } else {
+  //     console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
+  //   }
 
   // displayMarker(keystore.savedlist);
+  //displayMarker(keystore.extralist);
+  displayExtraMarker(keystore.extralist);
   routeClick();
   routeDel();
   // 추가로 필요한 로직 수행

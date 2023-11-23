@@ -261,12 +261,15 @@ const displayMarker = (markerPositions) => {
 
   markerPositions = markerPositions.flat();
 
-  const p = markerPositions.map((x) => console.log(x, x.x, x.y, "DATA@@@@"));
-
   const positions = markerPositions.map(
     (position) => new kakao.maps.LatLng(position.y, position.x)
   );
-  console.log(positions, "POPOSPOPSOPSOPSOPOS");
+
+  const infos = markerPositions.map((info) => {
+    return new kakao.maps.InfoWindow({
+      content: info.place_name,
+    });
+  });
 
   // const positions = markerPositions.map(
   //   (position) => new kakao.maps.LatLng(position.y, position.x)
@@ -274,13 +277,24 @@ const displayMarker = (markerPositions) => {
   //console.log(positions, "POS");
 
   if (positions.length > 0) {
-    markers.value = positions.map(
-      (position) =>
-        new kakao.maps.Marker({
-          map: toRaw(map),
-          position,
-        })
-    );
+    markers.value = positions.map((position, i) => {
+      const marker = new kakao.maps.Marker({
+        map: toRaw(map),
+
+        position,
+      });
+      kakao.maps.event.addListener(
+        marker,
+        "mouseover",
+        makeOverListener(map, marker, infos[i])
+      );
+      kakao.maps.event.addListener(
+        marker,
+        "mouseout",
+        makeOutListener(infos[i])
+      );
+      return marker;
+    });
 
     const bounds = positions.reduce(
       (bounds, latlng) => bounds.extend(latlng),
@@ -290,6 +304,19 @@ const displayMarker = (markerPositions) => {
     toRaw(map).setBounds(bounds);
   }
   // poly(markerPositions1);
+};
+
+const makeOverListener = (map, marker, infowindow) => {
+  return function () {
+    infowindow.open(map, marker);
+  };
+};
+
+// 인포윈도우를 닫는 클로저를 만드는 함수입니다
+const makeOutListener = (infowindow) => {
+  return function () {
+    infowindow.close();
+  };
 };
 
 async function getCarDirection(pos, day) {

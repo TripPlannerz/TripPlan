@@ -45,6 +45,21 @@ const drawerClick = (e) => {
   }
 };
 
+const addToAddList = (i) => {
+  if (i.category_group_code === "AD5" && keystore.getRooms === planstore.days) {
+    $q.notify({
+      type: "negative",
+      message: "여행일 이상은 추가할 수 없습니다.",
+    });
+    console.log("여행일 이상은 추가할 수 없습니다.");
+  } else {
+    keystore.saveextralist(i);
+    console.log(i, "HERERERE");
+    //i.savetype = tab.value;
+    //addList.value.push(i);
+  }
+};
+
 // watchEffect(() => {
 //   let tmpcnt = 0;
 //   keystore.addlist.map((f) => {
@@ -145,7 +160,31 @@ const drawerClick = (e) => {
       </q-input>
 
       <q-tab-panels v-model="lefttab">
-        <q-tab-panel name="places"> </q-tab-panel>
+        <q-tab-panel name="places">
+          <q-list v-for="item in store.searchlist" :key="item.id">
+            <q-item>
+              <q-item-section>
+                <q-item-label>{{ item.place_name }}</q-item-label>
+                <q-item-label caption lines="3">{{
+                  item.address_name
+                }}</q-item-label>
+                <q-item-label caption>{{ item.phone }}</q-item-label>
+              </q-item-section>
+
+              <q-item-section side top>
+                <!-- <q-icon name="star" color="yellow" /> -->
+                <q-btn
+                  @click="addToAddList(item)"
+                  round
+                  color="primary"
+                  icon="add"
+                />
+              </q-item-section>
+            </q-item>
+
+            <q-separator spaced inset />
+          </q-list>
+        </q-tab-panel>
       </q-tab-panels>
     </q-scroll-area>
   </q-drawer>

@@ -7,83 +7,6 @@ import { useSearchKeywordStore } from "../../stores/searchkeyword";
 const planStore = usePlanStore();
 const keyStore = useSearchKeywordStore();
 // CHECKLIST : sample data
-const data = [
-  {
-    address_name: "제주특별자치도 서귀포시 색달동 2476-3",
-    category_group_code: "FD6",
-    category_group_name: "음식점",
-    category_name: "음식점 > 한식 > 해물,생선",
-    distance: "",
-    id: "9947817",
-    phone: "064-738-7123",
-    place_name: "제주 서귀포 중문 갈치조림 맛집 이조은식당",
-    place_url: "http://place.map.kakao.com/9947817",
-    road_address_name: "제주특별자치도 서귀포시 천제연로 97",
-    x: "126.41611869624526",
-    y: "33.25507874842121",
-    savetype: "places",
-  },
-  {
-    address_name: "제주특별자치도 서귀포시 표선면 토산리 423-3",
-    category_group_code: "FD6",
-    category_group_name: "음식점",
-    category_name: "음식점 > 한식 > 해물,생선",
-    distance: "",
-    id: "483930986",
-    phone: "010-3157-0828",
-    place_name: "제주갈치맛집 영목이네",
-    place_url: "http://place.map.kakao.com/483930986",
-    road_address_name: "제주특별자치도 서귀포시 표선면 일주동로6455번길 21",
-    x: "126.78366323682805",
-    y: "33.306468773509394",
-    savetype: "places",
-  },
-  {
-    address_name: "제주특별자치도 제주시 구좌읍 동복리 719-1",
-    category_group_code: "FD6",
-    category_group_name: "음식점",
-    category_name: "음식점 > 간식 > 떡,한과",
-    distance: "",
-    id: "1701775963",
-    phone: "070-8745-8785",
-    place_name: "제주맛집",
-    place_url: "http://place.map.kakao.com/1701775963",
-    road_address_name: "제주특별자치도 제주시 구좌읍 동복로 85",
-    x: "126.715697062663",
-    y: "33.5536047720057",
-    savetype: "places",
-  },
-  {
-    address_name: "제주특별자치도 제주시 삼도이동 1254",
-    category_group_code: "AD5",
-    category_group_name: "숙박",
-    category_name: "여행 > 숙박 > 호텔 > 특급호텔 > 라마다호텔",
-    distance: "",
-    id: "15292731",
-    phone: "064-729-8100",
-    place_name: "라마다프라자 제주호텔",
-    place_url: "http://place.map.kakao.com/15292731",
-    road_address_name: "제주특별자치도 제주시 탑동로 66",
-    x: "126.51809364015251",
-    y: "33.51878081111122",
-    savetype: "places",
-  },
-  {
-    address_name: "제주특별자치도 서귀포시 색달동 2812-4",
-    category_group_code: "AD5",
-    category_group_name: "숙박",
-    category_name: "여행 > 숙박 > 호텔 > 특급호텔 > 롯데호텔",
-    distance: "",
-    id: "7862728",
-    phone: "064-731-1000",
-    place_name: "롯데호텔 제주",
-    place_url: "http://place.map.kakao.com/7862728",
-    road_address_name: "제주특별자치도 서귀포시 중문관광로72번길 35",
-    x: "126.410600157083",
-    y: "33.2484564531332",
-    savetype: "places",
-  },
-];
 
 const places = ref([]);
 
@@ -102,10 +25,15 @@ onMounted(() => {
 
 watchEffect(() => {
   infos.value = planStore.tripinfo;
+  places.value = keyStore.extralist;
+  console.log(places.value, keyStore.extralist, "============================");
   console.log(infos.value, "SDJKFIJAEGFUIHN");
+  let temp = keyStore.getExtraList;
+  console.log(temp, "이거이거이거이거이거이거");
 
   // 추가로 필요한 로직 수행
 });
+
 const enabled = ref(true);
 
 const dragging = ref(false);
@@ -166,13 +94,18 @@ const log = (event) => {
           :key="planData.indexOf(day)"
         >
           DAY {{ planData.indexOf(day) + 1 }}<br />
-          <div v-if="infos.length !== 0">
+          <div v-if="infos.length !== 0 || infos.value !== undefined">
             택시요금 : {{ infos[planData.indexOf(day)].taxifare }}<br />
             거리 :{{ infos[planData.indexOf(day)].distance / 1000 }} Km<br />
             소요시간 :{{
               Math.round(infos[planData.indexOf(day)].duration / 60)
             }}
             분 <br />
+          </div>
+          <div v-else>
+            택시요금 : <br />
+            거리 : Km<br />
+            소요시간 : 분 <br />
           </div>
 
           <draggable
