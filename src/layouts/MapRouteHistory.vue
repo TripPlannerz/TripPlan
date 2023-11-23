@@ -2,23 +2,36 @@
   <div>
     <div id="map2"></div>
 
-    <button @click="planPost()">marker set 1</button>
-    <q-btn @click="isOpen = true">저장</q-btn>
+    <!-- <button @click="planPost()">marker set 1</button> -->
+    <q-btn color="primary" @click="isOpen = true">저장</q-btn>
     <!-- <button @click="">marker set 1</button> -->
     <q-dialog v-model="isOpen" class="z-top">
       <q-card class="fixed-center" style="min-width: 600px">
         <q-card-section class="col items-center">
-          <div>
-            <q-btn icon="close" flat round dense v-close-popup />
-          </div>
-
+          <q-card-section class="row items-center justify-center">
+            <q-avatar
+              icon="perm_contact_calendar"
+              color="primary"
+              text-color="white"
+            />
+            <div class="fixed-top-right q-ma-md">
+              <q-btn
+                icon="close"
+                flat
+                round
+                dense
+                v-close-popup
+                class="q-my-md"
+              />
+            </div>
+          </q-card-section>
           <LoginComponent
             v-if="!userInfo"
             @onClose="isOpen = false"
             @openRegister="openLogin = false"
           />
           <div v-else :type="'register'" @onClose="isOpen = false">
-            <div class="text-h5">제목을 입력하세요.</div>
+            <div class="text-h5 q-my-sm">제목을 입력하세요.</div>
             <div class="flex">
               <q-input v-model="text" :dense="dense" />
               <q-btn>추가</q-btn>
@@ -518,7 +531,7 @@ watchEffect(() => {
 <style scoped>
 #map2 {
   width: 100%;
-  height: 800px;
+  height: 95vh;
 }
 
 .button-group {
@@ -527,5 +540,9 @@ watchEffect(() => {
 
 button {
   margin: 0 3px;
+}
+
+q-btn {
+  float: inline-end;
 }
 </style>

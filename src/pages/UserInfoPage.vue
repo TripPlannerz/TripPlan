@@ -1,7 +1,7 @@
 <script setup>
 import TheHeadingNavbar from "src/components/common/TheHeadingNavbar.vue";
 import UserFormComponent from "../components/user/UserFormComponent.vue";
-import ContentsComponent from "src/components/main/ContentsComponent.vue";
+import ContentsCards from "src/components/main/ContentsCards.vue";
 
 import { storeToRefs } from "pinia";
 import { useMemberStore } from "../stores/member";
@@ -37,8 +37,8 @@ onMounted(() => {
 </script>
 
 <template>
+  <TheHeadingNavbar />
   <div class="container">
-    <TheHeadingNavbar />
     <q-card
       class="fixed-center fullscreen q-mt-lg"
       style="width: 80%; height: 70vh"
@@ -53,9 +53,9 @@ onMounted(() => {
 
         <UserFormComponent :type="'myPage'" v-if="modify" />
         <div v-else>
-          <div style="height: 100%; border: 1px solid black">
+          <div style="height: 100%">
             <q-scroll-area :thumb-style="thumbStyle" :bar-style="barStyle">
-              <ContentsComponent />
+              <ContentsCards />
             </q-scroll-area>
           </div>
         </div>
@@ -71,7 +71,7 @@ onMounted(() => {
 }
 
 .q-scrollarea {
-  height: 40vh;
+  height: 50vh;
   border-radius: 0.5rem;
 }
 .example-item {

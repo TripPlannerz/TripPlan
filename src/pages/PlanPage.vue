@@ -63,7 +63,7 @@ const goPrevious = (currentStep) => {
         title="장소 및 숙소 선택"
         icon="place"
         :done="step > 2"
-        style="height: 80vh; overflow: hidden"
+        style="height: 80vh"
       >
         <MapPage />
       </q-step>
@@ -74,7 +74,7 @@ const goPrevious = (currentStep) => {
         title="일정 편집"
         icon="edit_calendar"
         :done="step > 3"
-        style="height: 80vh; overflow: hidden"
+        style="height: 80vh"
       >
         <!-- <EditPlan />
           <MapRoute /> -->

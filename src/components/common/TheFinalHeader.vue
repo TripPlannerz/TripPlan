@@ -70,23 +70,6 @@ const addToAddList = (i) => {
 //   });
 //   currentRoomCnt.value = tmpcnt;
 // });
-
-/* scroll style */
-const thumbStyle = {
-  right: "4px",
-  borderRadius: "5px",
-  backgroundColor: "#ffc436",
-  width: "5px",
-  opacity: 0.75,
-};
-
-const barStyle = {
-  right: "2px",
-  borderRadius: "9px",
-  backgroundColor: "#ffc436",
-  width: "9px",
-  opacity: 0.2,
-};
 </script>
 
 <template>
@@ -102,6 +85,7 @@ const barStyle = {
     bordered
     side="left"
     show-if-above
+    style="max-height: fit-content"
   >
     <q-item-label header>
       여행지
@@ -109,20 +93,11 @@ const barStyle = {
     </q-item-label>
 
     <q-item-label header>
-      여행기간<br />
-      {{ planstore.dates.from }} - {{ planstore.dates.to }}
+      여행 기간
+      <div class="text-subtitle1">
+        {{ planstore.dates.from }} - {{ planstore.dates.to }}
+      </div>
     </q-item-label>
-    <div>
-      <q-btn
-        class="float-right"
-        dense
-        flat
-        round
-        icon="add_circle_outline"
-        @click="toggleRightDrawer"
-        style="margin: 0; margin-right: 0.5rem"
-      />
-    </div>
 
     <q-tabs
       v-model="lefttab"
@@ -133,25 +108,30 @@ const barStyle = {
       narrow-indicator
     >
       <q-tab name="places" label="일정 편집" />
+      <div>
+        <q-btn
+          class="float-right"
+          dense
+          flat
+          round
+          icon="add_circle_outline"
+          @click="toggleRightDrawer"
+          style="margin: 0; margin-right: 0.5rem"
+        />
+      </div>
       <!-- <q-tab name="rooms" label="숙소" /> -->
     </q-tabs>
 
     <q-separator />
-    <q-scroll-area
-      class="fit"
-      :thumb-style="thumbStyle"
-      :bar-style="barStyle"
-      style="height: 50vh"
-    >
-      <q-tab-panels v-model="lefttab">
-        <q-tab-panel v-if="keystore.clickflag" name="places">
-          <EditPlanHistory />
-        </q-tab-panel>
-        <q-tab-panel v-else name="places">
-          <EditPlan />
-        </q-tab-panel>
-      </q-tab-panels>
-    </q-scroll-area>
+
+    <q-tab-panels v-model="lefttab">
+      <q-tab-panel v-if="keystore.clickflag" name="places">
+        <EditPlanHistory />
+      </q-tab-panel>
+      <q-tab-panel v-else name="places">
+        <EditPlan />
+      </q-tab-panel>
+    </q-tab-panels>
   </q-drawer>
 
   <q-drawer
@@ -163,23 +143,9 @@ const barStyle = {
     side="right"
   >
     <q-item-label header>
-      추가 여행지
-      <div class="text-h6">아 맞다 여기도 가야지</div>
+      <div class="text-h6">추가하고 싶은 여행지를 검색해보세요.</div>
     </q-item-label>
 
-    <q-tabs
-      v-model="lefttab"
-      dense
-      class="text-grey"
-      active-color="primary"
-      indicator-color="primary"
-      narrow-indicator
-    >
-      <q-tab name="places" label="장소 선택" />
-      <!-- <q-tab name="rooms" label="숙소" /> -->
-    </q-tabs>
-
-    <q-separator />
     <form @submit.prevent="searchPlaces" class="q-ma-sm">
       <!-- TODO:  -->
       <q-input
@@ -205,40 +171,33 @@ const barStyle = {
       </q-input>
     </form>
 
-    <q-scroll-area
-      class="fit"
-      :thumb-style="thumbStyle"
-      :bar-style="barStyle"
-      style="height: 60vh"
-    >
-      <q-tab-panels v-model="lefttab">
-        <q-tab-panel name="places">
-          <q-list v-for="item in store.searchlist" :key="item.id">
-            <q-item>
-              <q-item-section>
-                <q-item-label>{{ item.place_name }}</q-item-label>
-                <q-item-label caption lines="3">{{
-                  item.address_name
-                }}</q-item-label>
-                <q-item-label caption>{{ item.phone }}</q-item-label>
-              </q-item-section>
+    <q-tab-panels v-model="lefttab">
+      <q-tab-panel name="places">
+        <q-list v-for="item in store.searchlist" :key="item.id">
+          <q-item>
+            <q-item-section>
+              <q-item-label>{{ item.place_name }}</q-item-label>
+              <q-item-label caption lines="3">{{
+                item.address_name
+              }}</q-item-label>
+              <q-item-label caption>{{ item.phone }}</q-item-label>
+            </q-item-section>
 
-              <q-item-section side top>
-                <!-- <q-icon name="star" color="yellow" /> -->
-                <q-btn
-                  @click="addToAddList(item)"
-                  round
-                  color="primary"
-                  icon="add"
-                />
-              </q-item-section>
-            </q-item>
+            <q-item-section side top>
+              <!-- <q-icon name="star" color="yellow" /> -->
+              <q-btn
+                @click="addToAddList(item)"
+                round
+                color="primary"
+                icon="add"
+              />
+            </q-item-section>
+          </q-item>
 
-            <q-separator spaced inset />
-          </q-list>
-        </q-tab-panel>
-      </q-tab-panels>
-    </q-scroll-area>
+          <q-separator spaced inset />
+        </q-list>
+      </q-tab-panel>
+    </q-tab-panels>
   </q-drawer>
 </template>
 
