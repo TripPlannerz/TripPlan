@@ -9,6 +9,7 @@ const keyStore = useSearchKeywordStore();
 // CHECKLIST : sample data
 
 const places = ref([]);
+const routecolor = ["#CC0000", "#6666CC", "#99FF00"];
 
 const planData = ref();
 const infos = ref([]);
@@ -90,9 +91,10 @@ const log = (event) => {
 
         <!-- accommodations -->
         <div
-          class="container q-mx-lg q-my-sm"
-          v-for="day in planData"
-          :key="planData.indexOf(day)"
+          class="cardcontainer q-mx-lg q-my-sm"
+          v-for="(day, idx) in planData"
+          :key="idx"
+          :style="{ borderColor: routecolor[idx] }"
         >
           <div class="text-center q-my-sm">
             DAY {{ planData.indexOf(day) + 1 }}
@@ -146,7 +148,15 @@ const log = (event) => {
   min-width: 200px;
   min-height: 150px;
 }
+.cardcontainer {
+  background-color: #f7f8f9;
+  border-radius: 0.5rem;
+  min-width: 200px;
+  min-height: 150px;
+  border-style: solid;
 
+  border-width: 5px;
+}
 .item-attribute {
   padding: 10px;
   border: 1px solid black;
