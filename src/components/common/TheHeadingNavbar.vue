@@ -39,42 +39,64 @@ const openLogin = ref(false);
 </script>
 
 <template>
-  <div class="container fixed-top relative-position">
-    <div class="fixed-top-left q-pa-md q-gutter-sm">
-      <q-btn to="/" flat class="text-h5"> Trip </q-btn>
+  <div
+    class="container fixed-top relative-position q-mt-lg flex items-center justify-between"
+  >
+    <div class="row" style="width: 500px">
+      <q-img
+        src="public/images/process.png"
+        spinner-color="primary"
+        style="height: 50px; max-width: 50px; margin-left: 1rem"
+      />
+
+      <div class="q-pl-md q-gutter-sm" style="margin: auto 0">
+        <router-link
+          to="/"
+          class="text-h6 text-weight-bold"
+          spinner-color="white"
+        >
+          TripPlan
+        </router-link>
+      </div>
     </div>
 
-    <div class="fixed-top-right">
+    <div class="float-right">
       <div class="q-pa-sm q-gutter-sm">
         <template v-for="menu in menuList" :key="menu.routeName">
           <template v-if="menu.show">
             <template v-if="menu.routeName === 'user-logout'">
-              <q-btn to="/" @click.prevent="logout" flat class="text-h5">
+              <router-link to="/" @click.prevent="logout" flat class="text-h6">
                 {{ menu.name }}
-              </q-btn>
+              </router-link>
             </template>
             <template v-else-if="menu.routeName === 'user-mypage'">
-              <q-btn :to="{ name: menu.routeName }" flat class="text-h5">
-                <q-avatar icon="account_circle" text-color="black" />
-              </q-btn>
+              <router-link :to="{ name: menu.routeName }" class="text-h6">
+                <q-avatar>
+                  <q-img
+                    src="public/images/user.png"
+                    spinner-color="white"
+                    style="height: 50px; max-width: 50px"
+                  />sss</q-avatar
+                >
+              </router-link>
             </template>
             <template v-else-if="menu.routeName === 'user-login'">
-              <q-btn
+              <router-link
                 @click="(openLogin = true), (isOpen = true)"
-                flat
-                class="text-h5"
+                class="text-h6"
+                to=""
               >
                 {{ menu.name }}
-              </q-btn>
+              </router-link>
             </template>
             <template v-else-if="menu.routeName === 'user-register'">
-              <q-btn
+              <router-link
                 @click="(openLogin = false), (isOpen = true)"
-                flat
-                class="text-h5"
+                class="text-h6"
+                to=""
               >
                 {{ menu.name }}
-              </q-btn>
+              </router-link>
             </template>
           </template>
         </template>
@@ -85,11 +107,14 @@ const openLogin = ref(false);
       <q-card class="fixed-center" style="min-width: 600px">
         <q-card-section class="col items-center">
           <q-card-section class="row items-center">
-            <q-avatar
+            <!-- <q-avatar
               icon="perm_contact_calendar"
               color="primary"
               text-color="white"
-            />
+            /> -->
+            <div class="on-right">
+              <q-btn icon="close" flat round dense v-close-popup />
+            </div>
           </q-card-section>
           <LoginComponent
             v-if="openLogin === true"
@@ -100,6 +125,7 @@ const openLogin = ref(false);
             v-else
             :type="'register'"
             @onClose="isOpen = false"
+            @openLogin="openLogin = true"
           />
         </q-card-section>
 
@@ -115,5 +141,17 @@ const openLogin = ref(false);
 <style scoped>
 .container {
   z-index: 5000;
+}
+
+.q-card {
+  border-radius: 0.5rem;
+}
+
+a {
+  cursor: pointer;
+  margin-top: 2rem;
+  margin-right: 2rem;
+  color: #0c356a;
+  text-decoration: none;
 }
 </style>

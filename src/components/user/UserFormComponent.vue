@@ -147,7 +147,14 @@ const onReset = () => {
     />
 
     <div class="float-right">
-      <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+      <q-btn
+        label="취소"
+        type="button"
+        color="primary"
+        flat
+        class="q-ml-sm"
+        @click="$emit('openRegister')"
+      />
       <q-btn
         class="q-mx-sm q-my-md"
         :label="type === 'register' ? '가입' : '수정'"

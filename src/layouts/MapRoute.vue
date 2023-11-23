@@ -20,8 +20,9 @@
           <div v-else :type="'register'" @onClose="isOpen = false">
             <div class="text-h5">제목을 입력하세요.</div>
             <div class="flex">
-              <q-input v-model="text" :dense="dense" />
-              <q-btn>추가</q-btn>
+              <q-input v-model="plantitle" />
+              <q-btn @click="planPost">추가</q-btn>
+              {{ plantitle }}
             </div>
           </div>
         </q-card-section>
@@ -58,7 +59,8 @@ const routeall = ref([]);
 //const keyword = ref();
 
 const { userInfo } = storeToRefs(memberstore);
-const { dates, places } = storeToRefs(destinationstore);
+const { dates, places, title } = storeToRefs(destinationstore);
+const { getTitle } = destinationstore;
 
 const routecolor = ["#CC0000", "#6666CC", "#99FF00"];
 
@@ -67,6 +69,7 @@ const markerPositions1 = ref(keystore.savedlist);
 
 const x = ref("");
 const y = ref("");
+const plantitle = ref("");
 
 let map;
 let geocoder;
@@ -77,6 +80,7 @@ let markers = ref([]);
 
 const keyword = ref("이태원");
 const plandata = ref({
+  title: plantitle.value,
   region: places.value.region,
   startDate: dates.value.from,
   endDate: dates.value.to,
@@ -87,9 +91,27 @@ const plandata = ref({
 const isOpen = ref(false);
 
 const planPost = async () => {
-  console.log(plandata.value, "PD");
+  console.log(plantitle.value);
+  console.log(
+    {
+      title: plantitle.value,
+      region: places.value.region,
+      startDate: dates.value.from,
+      endDate: dates.value.to,
+      userId: userInfo.value?.userId,
+      userName: userInfo.value?.userName,
+    },
+    "PD"
+  );
 
-  await makePlan(plandata.value);
+  await makePlan({
+    title: plantitle.value,
+    region: places.value.region,
+    startDate: dates.value.from,
+    endDate: dates.value.to,
+    userId: userInfo.value?.userId,
+    userName: userInfo.value?.userName,
+  });
 };
 
 const routeDel = () => {
@@ -457,5 +479,9 @@ watchEffect(() => {
 
 button {
   margin: 0 3px;
+}
+
+.q-card {
+  border-radius: 0.5rem;
 }
 </style>
