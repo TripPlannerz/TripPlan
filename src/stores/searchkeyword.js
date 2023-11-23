@@ -5,6 +5,7 @@ export const useSearchKeywordStore = defineStore("searchkeyword", {
     keywordlist: [],
     addlist: [],
     savedlist: [],
+    clickflag: false,
   }),
 
   getters: {

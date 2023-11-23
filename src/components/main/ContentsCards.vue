@@ -23,6 +23,7 @@ onMounted(() => {
 
 const onCardClick = async (pid) => {
   console.log(pid, "card clickckckck");
+  keystore.clickflag = true;
   await getPlanDetail(pid).then((res) => {
     console.log(res.data);
     planstore.places.region = res.data.region;

@@ -1,17 +1,19 @@
 <script setup>
 import { ref, onMounted, watchEffect } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useSearchListStore } from "src/stores/example-store";
 import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
 import { useQuasar } from "quasar";
 import EditPlan from "../plan/EditPlan.vue";
+import EditPlanHistory from "../plan/EditPlanHistory.vue";
 
 const $q = useQuasar();
 
 const store = useSearchListStore();
 const keystore = useSearchKeywordStore();
 const planstore = usePlanStore();
+const route = useRoute(); //이거 지워
 
 const leftDrawerOpen = ref(false);
 const rightDrawerOpen = ref(false);
@@ -29,6 +31,7 @@ const toggleLeftDrawer = () => {
 
 const toggleRightDrawer = () => {
   rightDrawerOpen.value = !rightDrawerOpen.value;
+  console.log(keystore.clickflag, "GGG");
 };
 
 const searchPlaces = () => {
@@ -97,7 +100,10 @@ const drawerClick = (e) => {
       <q-separator />
 
       <q-tab-panels v-model="lefttab">
-        <q-tab-panel name="places">
+        <q-tab-panel v-if="keystore.clickflag" name="places">
+          <EditPlanHistory />
+        </q-tab-panel>
+        <q-tab-panel v-else name="places">
           <EditPlan />
         </q-tab-panel>
       </q-tab-panels>

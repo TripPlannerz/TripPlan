@@ -27,9 +27,9 @@
         </q-card-section>
 
         <!-- <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="Turn on Wifi" color="primary" v-close-popup />
-        </q-card-actions> -->
+            <q-btn flat label="Cancel" color="primary" v-close-popup />
+            <q-btn flat label="Turn on Wifi" color="primary" v-close-popup />
+          </q-card-actions> -->
       </q-card>
     </q-dialog>
   </div>
@@ -147,9 +147,9 @@ const routeClick = async () => {
     routeall.value.push(routetest.value);
     console.log(`After getCarDirection ${i}`);
   }
-  // await displayMarker(keystore.savedlist);
+  await displayMarker(keystore.savedlist);
 
-  console.log(routeall.value, "routeall");
+  //   console.log(routeall.value, "routeall");
 };
 
 const initializeMap = () => {
@@ -198,7 +198,7 @@ const initMap = () => {
       function (result, status) {
         // 정상적으로 검색이 완료됐으면
         if (status === kakao.maps.services.Status.OK) {
-          console.log("HERERE", status, result);
+          //   console.log("HERERE", status, result);
           // coords =
           //options.center = new kakao.maps.LatLng(result[0].y, result[0].x);
           y.value = result[0].y;
@@ -414,7 +414,7 @@ watchEffect(() => {
   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
   // }
 
-  displayMarker(keystore.savedlist);
+  // displayMarker(keystore.savedlist);
   routeClick();
   routeDel();
   // 추가로 필요한 로직 수행
