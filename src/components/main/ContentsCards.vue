@@ -1,25 +1,51 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getPlanDetail, getPlanList, getSchedule } from "src/apis/schedule";
+import {
+  getPlanDetail,
+  getPlanList,
+  getSchedule,
+  getMyPlanList,
+  deletePlan,
+} from "src/apis/schedule";
 import { usePlanStore } from "src/stores/plan";
 import { useSearchKeywordStore } from "src/stores/searchkeyword";
-import { useRouter } from "vue-router";
+import { useMemberStore } from "src/stores/member";
+import { useRouter, useRoute } from "vue-router";
 
 const planstore = usePlanStore();
 const keystore = useSearchKeywordStore();
+const member = useMemberStore();
 
 const planlist = ref([]);
 
 const router = useRouter();
+const route = useRoute();
 
 onMounted(() => {
-  const res = getPlanList().then((res) => {
-    console.log(res.data);
-    planlist.value = res.data;
-    return res.data;
-  });
+  console.log(route.name, "route");
+  if (route.name === "main") {
+    const res = getPlanList().then((res) => {
+      console.log(res.data);
+      planlist.value = res.data;
+      return res.data;
+    });
+  } else {
+    console.log("here", member.userInfo.userId);
+    const res = getMyPlanList(member.userInfo.userId).then((res) => {
+      planlist.value = res.data;
+      return res.data;
+    });
+  }
+
   console.log(planlist.value);
+  console.log(member.myPageFlag, "MPF");
 });
+
+const onDeleteClick = async (pid) => {
+  await deletePlan(pid)
+    .then((r) => console.log(r))
+    .catch((e) => console.log(e));
+};
 
 const onCardClick = async (pid) => {
   console.log(pid, "card clickckckck");
@@ -66,60 +92,6 @@ const onCardClick = async (pid) => {
     class="row justify-between q-mx-sm q-gutter-sm"
     style="width: 70%; margin: auto"
   >
-    <!-- <div class="q-pa-md" style="max-width: 350px">
-      <q-intersection
-        v-for="plan in planlist"
-        :key="plan.planId"
-        transition="scale"
-        class="example-item"
-      >
-        <q-list
-          dense
-          bordered
-          padding
-          class="rounded-borders example-item"
-          style="background-color: #ffffff"
-        >
-          <q-item clickable v-ripple @click="onCardClick(plan.planId)">
-            <q-item-section>
-              <div class="row items-center">
-                <q-img
-                  class="q-mr-sm q-my-sm"
-                  src="public/images/list.png"
-                  style="height: 30px; max-width: 30px"
-                />
-                <div class="row">
-                  <div class="text-h6 text-weight-bold">#{{ plan.planId }}</div>
-                  <div class="text-h6 text-weight-bold q-mx-sm">
-                    {{ plan.region }}
-                  </div>
-                </div>
-              </div>
-              <div class="text-h5 text-weight-bold" style="color: #0c356a">
-                {{ plan.title }}
-              </div>
-              <div
-                class="text-subtitle2 text-weight-bold"
-                style="color: #0c356a"
-              >
-                {{ plan.startDate }} ~ {{ plan.endDate }}
-              </div>
-              <div class="text-right">
-                <div class="text-subtitle1 inline-block q-pt-sm q-px-sm">
-                  작성자 :
-                </div>
-
-                <div class="text-subtitle1 inline-block" style="color: #404040">
-                  {{ plan.userId }}
-                </div>
-              </div>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-intersection>
-    </div> -->
-    <!--  -->
-
     <q-intersection
       v-for="plan in planlist"
       :key="plan.planId"
@@ -136,7 +108,7 @@ const onCardClick = async (pid) => {
                 style="height: 30px; max-width: 30px"
               />
               <div class="row">
-                <div class="text-h6 text-weight-bold">#{{ plan.planId }}</div>
+                <div class="text-h6 text-weight-bold">#{{ plan.title }}</div>
                 <div class="text-h6 text-weight-bold q-mx-sm">
                   {{ plan.region }}
                 </div>
@@ -151,8 +123,15 @@ const onCardClick = async (pid) => {
                 {{ plan.userId }}
               </div>
             </div>
+
             <div class="flex justify-end">
               <q-btn flat>자세히 보기 ></q-btn>
+              <q-btn
+                flat
+                v-if="route.name !== 'main'"
+                @click.stop="onDeleteClick(plan.planId)"
+                >삭제</q-btn
+              >
             </div>
           </div>
         </q-card-section>

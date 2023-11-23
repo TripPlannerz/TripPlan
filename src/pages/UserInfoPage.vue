@@ -33,6 +33,7 @@ onMounted(() => {
   if (!userInfo.value) {
     router.push({ name: "main" });
   }
+  memberStore.myPageFlag = true;
 });
 </script>
 
