@@ -39,7 +39,7 @@ const countDays = () => {
 </script>
 
 <template>
-  <div class="">
+  <div class="flex justify-center">
     <div class="q-pa-md">
       <!-- TODO : 캘린더 두개 놓고 왼쪽에서 from, 오른쪽에서 to 설정 가능 하도록   -->
       <q-date
@@ -56,9 +56,10 @@ const countDays = () => {
 
 <style scoped>
 .calendar {
-  width: 50%;
+  width: 1000px;
   height: 60vh;
   box-shadow: none;
   border-radius: 0.5rem;
+  margin-top: 4rem;
 }
 </style>

@@ -6,7 +6,6 @@ import MapRouteHistoryPage from "src/pages/MapRouteHistoryPage.vue";
 
 <template>
   <div>
-    sdf
     <q-layout view="hHh lpR fFf">
       <TheFinalHeader />
 

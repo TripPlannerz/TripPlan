@@ -120,8 +120,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #map {
-  width: 400px;
-  height: 400px;
+  width: 40%;
+  /* height: 0vh; */
 }
 
 .button-group {

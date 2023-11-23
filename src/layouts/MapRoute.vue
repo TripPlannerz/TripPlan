@@ -2,8 +2,8 @@
   <div>
     <div id="map2"></div>
 
-    <button @click="planPost()">marker set 1</button>
-    <q-btn @click="isOpen = true">저장</q-btn>
+    <!-- <button @click="planPost()">marker set 1</button> -->
+    <q-btn @click="isOpen = true" color="primary">저장</q-btn>
     <!-- <button @click="">marker set 1</button> -->
     <q-dialog v-model="isOpen" class="z-top">
       <q-card class="fixed-center" style="min-width: 600px">
@@ -47,6 +47,10 @@ import { makePlan } from "src/apis/plan";
 import LoginComponent from "../components/user/LoginComponent.vue";
 import UserFormComponent from "../components/user/UserFormComponent.vue";
 
+const props = defineProps({
+  step: Number,
+});
+console.log("maproute", props.step);
 const infowindow = ref(null);
 const store = useSearchListStore();
 const keystore = useSearchKeywordStore();
@@ -497,7 +501,7 @@ watchEffect(() => {
 <style scoped>
 #map2 {
   width: 100%;
-  height: 800px;
+  height: 70vh;
 }
 
 .button-group {

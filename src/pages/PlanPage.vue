@@ -41,62 +41,78 @@ const goPrevious = (currentStep) => {
 
 <template>
   <div>
-    <q-layout view="hhh Lpr lFr">
-      <q-stepper
-        class="container"
-        v-model="step"
-        ref="stepper"
-        color="primary"
-        animated
+    <q-stepper
+      class="container"
+      v-model="step"
+      ref="stepper"
+      color="primary"
+      animated
+    >
+      <q-step
+        class="stepper"
+        :name="1"
+        title="날짜 선택"
+        icon="event"
+        :done="step > 1"
       >
-        <q-step :name="1" title="날짜 선택" icon="event" :done="step > 1">
-          <CalendarComponent />
-        </q-step>
+        <CalendarComponent />
+      </q-step>
 
-        <q-step
-          :name="2"
-          title="장소 및 숙소 선택"
-          icon="place"
-          :done="step > 2"
-        >
-          <MapPage />
-        </q-step>
+      <q-step
+        :name="2"
+        title="장소 및 숙소 선택"
+        icon="place"
+        :done="step > 2"
+        style="height: 80vh"
+      >
+        <MapPage />
+      </q-step>
 
-        <q-step
-          :name="3"
-          title="일정 편집"
-          icon="edit_calendar"
-          :done="step > 3"
-        >
-          <!-- <EditPlan />
+      <q-step
+        class="q-pa-none"
+        :name="3"
+        title="일정 편집"
+        icon="edit_calendar"
+        :done="step > 3"
+        style="height: 80vh"
+      >
+        <!-- <EditPlan />
           <MapRoute /> -->
-          <FinalPlanPage />
-        </q-step>
+        <FinalPlanPage />
+      </q-step>
 
-        <q-step :name="4" title="Create an ad" icon="settings">
-          <MapRoute />
-        </q-step>
+      <!-- <q-step :name="4" title="Create an ad" icon="settings">
+        <MapRoute />
+      </q-step> -->
 
-        <template v-slot:navigation>
-          <q-stepper-navigation>
-            <q-btn
-              @click="goNext(step)"
-              color="primary"
-              :label="step === 4 ? 'Finish' : '다음'"
-            />
-            <q-btn
-              v-if="step > 1"
-              flat
-              color="primary"
-              @click="goPrevious(step)"
-              label="Back"
-              class="q-ml-sm"
-            />
-          </q-stepper-navigation>
-        </template>
-      </q-stepper>
-    </q-layout>
+      <template v-slot:navigation>
+        <q-stepper-navigation>
+          <q-btn
+            v-if="step > 1"
+            flat
+            color="primary"
+            @click="goPrevious(step)"
+            label="Back"
+            class="q-ml-sm q-mt-md"
+          />
+          <q-btn
+            @click="goNext(step)"
+            color="primary"
+            :label="step === 4 ? 'Finish' : '다음'"
+            :class="{
+              'float-right': step === 1,
+              'q-mx-md': true,
+              'q-mt-md': true,
+            }"
+          />
+        </q-stepper-navigation>
+      </template>
+    </q-stepper>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  height: 100vh;
+}
+</style>

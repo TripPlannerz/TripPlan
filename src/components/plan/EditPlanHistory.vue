@@ -67,10 +67,11 @@ const log = (event) => {
     </div> -->
 
     <!-- places -->
+
     <div class="overlay-container">
       <div class="relative-position flex mx-10">
-        <div class="container">
-          <div>places</div>
+        <div class="container q-mx-lg q-my-sm">
+          <div class="text-center q-my-sm">장소</div>
           <draggable
             class="dragArea list-group w-full"
             :list="places"
@@ -87,25 +88,32 @@ const log = (event) => {
           </draggable>
         </div>
 
-        <!-- accommodationsd -->
+        <!-- accommodations -->
         <div
           class="container q-mx-lg q-my-sm"
           v-for="day in planData"
           :key="planData.indexOf(day)"
         >
-          DAY {{ planData.indexOf(day) + 1 }}<br />
+          <div class="text-center q-my-sm">
+            DAY {{ planData.indexOf(day) + 1 }}
+          </div>
           <div v-if="infos.length !== 0 || infos.value !== undefined">
-            택시요금 : {{ infos[planData.indexOf(day)].taxifare }}<br />
-            거리 :{{ infos[planData.indexOf(day)].distance / 1000 }} Km<br />
-            소요시간 :{{
-              Math.round(infos[planData.indexOf(day)].duration / 60)
-            }}
-            분 <br />
+            <div class="q-ma-sm">
+              택시요금 : {{ infos[planData.indexOf(day)].taxifare }}
+            </div>
+            <div class="q-ma-sm">
+              거리 : {{ infos[planData.indexOf(day)].distance / 1000 }} Km
+            </div>
+            <div class="q-ma-sm">
+              소요시간 :
+              {{ Math.round(infos[planData.indexOf(day)].duration / 60) }}
+              분
+            </div>
           </div>
           <div v-else>
-            택시요금 : <br />
-            거리 : Km<br />
-            소요시간 : 분 <br />
+            <div class="q-ma-sm">택시요금 :</div>
+            <div class="q-ma-sm">거리 : Km</div>
+            <div class="q-ma-sm">소요시간 : 분</div>
           </div>
 
           <draggable
@@ -135,6 +143,8 @@ const log = (event) => {
 .container {
   background-color: #f7f8f9;
   border-radius: 0.5rem;
+  min-width: 200px;
+  min-height: 150px;
 }
 
 .item-attribute {

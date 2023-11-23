@@ -39,9 +39,7 @@ const openLogin = ref(false);
 </script>
 
 <template>
-  <div
-    class="container fixed-top relative-position q-mt-lg flex items-center justify-between"
-  >
+  <div class="container fixed-top q-mt-lg flex justify-between">
     <div class="row" style="width: 500px">
       <q-img
         src="public/images/process.png"
@@ -49,10 +47,10 @@ const openLogin = ref(false);
         style="height: 50px; max-width: 50px; margin-left: 1rem"
       />
 
-      <div class="q-pl-md q-gutter-sm" style="margin: auto 0">
+      <div class="q-pl-md q-gutter-sm" style="margin-top: 0.5rem">
         <router-link
           to="/"
-          class="text-h6 text-weight-bold"
+          class="nav-item text-h6 text-weight-bold"
           spinner-color="white"
         >
           TripPlan
@@ -60,30 +58,37 @@ const openLogin = ref(false);
       </div>
     </div>
 
-    <div class="float-right">
+    <div class="">
       <div class="q-pa-sm q-gutter-sm">
         <template v-for="menu in menuList" :key="menu.routeName">
           <template v-if="menu.show">
             <template v-if="menu.routeName === 'user-logout'">
-              <router-link to="/" @click.prevent="logout" flat class="text-h6">
+              <router-link
+                to="/"
+                @click.prevent="logout"
+                flat
+                class="nav-item text-h6"
+              >
                 {{ menu.name }}
               </router-link>
             </template>
             <template v-else-if="menu.routeName === 'user-mypage'">
-              <router-link :to="{ name: menu.routeName }" class="text-h6">
+              <router-link
+                :to="{ name: menu.routeName }"
+                class="nav-item text-h6"
+              >
                 <q-avatar>
                   <q-img
                     src="public/images/user.png"
                     spinner-color="white"
-                    style="height: 50px; max-width: 50px"
-                  />sss</q-avatar
-                >
+                    style="height: 40px; max-width: 40px"
+                /></q-avatar>
               </router-link>
             </template>
             <template v-else-if="menu.routeName === 'user-login'">
               <router-link
                 @click="(openLogin = true), (isOpen = true)"
-                class="text-h6"
+                class="nav-item text-h6"
                 to=""
               >
                 {{ menu.name }}
@@ -92,7 +97,7 @@ const openLogin = ref(false);
             <template v-else-if="menu.routeName === 'user-register'">
               <router-link
                 @click="(openLogin = false), (isOpen = true)"
-                class="text-h6"
+                class="nav-item text-h6"
                 to=""
               >
                 {{ menu.name }}
@@ -106,13 +111,13 @@ const openLogin = ref(false);
     <q-dialog v-model="isOpen" class="z-top">
       <q-card class="fixed-center" style="min-width: 600px">
         <q-card-section class="col items-center">
-          <q-card-section class="row items-center">
-            <!-- <q-avatar
+          <q-card-section class="row items-center justify-center">
+            <q-avatar
               icon="perm_contact_calendar"
               color="primary"
               text-color="white"
-            /> -->
-            <div class="on-right">
+            />
+            <div class="fixed-top-right q-ma-sm">
               <q-btn icon="close" flat round dense v-close-popup />
             </div>
           </q-card-section>
@@ -147,10 +152,10 @@ const openLogin = ref(false);
   border-radius: 0.5rem;
 }
 
-a {
+.nav-item {
   cursor: pointer;
   margin-top: 2rem;
-  margin-right: 2rem;
+  margin-right: 1rem;
   color: #0c356a;
   text-decoration: none;
 }

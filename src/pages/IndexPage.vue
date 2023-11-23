@@ -6,10 +6,15 @@ import TheHeadingNavbar from "src/components/common/TheHeadingNavbar.vue";
 
 <template>
   <TheHeadingNavbar />
+
   <!-- Carousel -->
   <CarouselComponent />
   <!-- 컨텐츠 -->
   <ContentsComponent />
 </template>
 
-<style scoped lang="css"></style>
+<style scoped lang="css">
+.container {
+  z-index: 5000;
+}
+</style>
