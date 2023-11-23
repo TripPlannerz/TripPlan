@@ -86,7 +86,7 @@ const data = [
 ];
 
 const places = ref([]);
-
+const routecolor = ["#CC0000", "#6666CC", "#99FF00"];
 const planData = ref([]);
 const infos = ref([]);
 onMounted(() => {
@@ -169,9 +169,10 @@ const log = (event) => {
 
         <!-- accommodations -->
         <div
-          class="container q-mx-lg q-my-sm"
-          v-for="day in planData"
-          :key="planData.indexOf(day)"
+          class="cardcontainer q-mx-lg q-my-sm"
+          v-for="(day, idx) in planData"
+          :key="idx"
+          :style="{ borderColor: routecolor[idx] }"
         >
           <div class="text-center">DAY {{ planData.indexOf(day) + 1 }}</div>
           <div v-if="infos.length !== 0">
@@ -217,6 +218,15 @@ const log = (event) => {
   border-radius: 0.5rem;
   min-width: 200px;
   min-height: 150px;
+}
+.cardcontainer {
+  background-color: #f7f8f9;
+  border-radius: 0.5rem;
+  min-width: 200px;
+  min-height: 150px;
+  border-style: solid;
+
+  border-width: 5px;
 }
 
 .item-attribute {
