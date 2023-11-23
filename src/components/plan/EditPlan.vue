@@ -148,9 +148,9 @@ const log = (event) => {
 
     <!-- places -->
     <div class="overlay-container">
-      <div class="relative-position flex mx-10">
-        <div class="container">
-          <div>places</div>
+      <div class="relative-position flex col mx-10">
+        <div class="container q-mx-lg q-my-sm">
+          <div class="text-center">장소</div>
           <draggable
             class="dragArea list-group w-full"
             :list="places"
@@ -167,13 +167,15 @@ const log = (event) => {
           </draggable>
         </div>
 
-        <!-- accommodationsd -->
+        <!-- accommodations -->
         <div
           class="container q-mx-lg q-my-sm"
           v-for="day in planData"
           :key="planData.indexOf(day)"
         >
-          DAY {{ planData.indexOf(day) + 1 }}<br />
+          <div class="text-center">
+            DAY {{ planData.indexOf(day) + 1 }}<br />
+          </div>
           <div v-if="infos.length !== 0">
             택시요금 : {{ infos[planData.indexOf(day)].taxifare }}<br />
             거리 :{{ infos[planData.indexOf(day)].distance / 1000 }} Km<br />
@@ -210,6 +212,8 @@ const log = (event) => {
 .container {
   background-color: #f7f8f9;
   border-radius: 0.5rem;
+  min-width: 200px;
+  min-height: 150px;
 }
 
 .item-attribute {

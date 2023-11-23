@@ -66,60 +66,6 @@ const onCardClick = async (pid) => {
     class="row justify-between q-mx-sm q-gutter-sm"
     style="width: 70%; margin: auto"
   >
-    <!-- <div class="q-pa-md" style="max-width: 350px">
-      <q-intersection
-        v-for="plan in planlist"
-        :key="plan.planId"
-        transition="scale"
-        class="example-item"
-      >
-        <q-list
-          dense
-          bordered
-          padding
-          class="rounded-borders example-item"
-          style="background-color: #ffffff"
-        >
-          <q-item clickable v-ripple @click="onCardClick(plan.planId)">
-            <q-item-section>
-              <div class="row items-center">
-                <q-img
-                  class="q-mr-sm q-my-sm"
-                  src="public/images/list.png"
-                  style="height: 30px; max-width: 30px"
-                />
-                <div class="row">
-                  <div class="text-h6 text-weight-bold">#{{ plan.planId }}</div>
-                  <div class="text-h6 text-weight-bold q-mx-sm">
-                    {{ plan.region }}
-                  </div>
-                </div>
-              </div>
-              <div class="text-h5 text-weight-bold" style="color: #0c356a">
-                {{ plan.title }}
-              </div>
-              <div
-                class="text-subtitle2 text-weight-bold"
-                style="color: #0c356a"
-              >
-                {{ plan.startDate }} ~ {{ plan.endDate }}
-              </div>
-              <div class="text-right">
-                <div class="text-subtitle1 inline-block q-pt-sm q-px-sm">
-                  작성자 :
-                </div>
-
-                <div class="text-subtitle1 inline-block" style="color: #404040">
-                  {{ plan.userId }}
-                </div>
-              </div>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-intersection>
-    </div> -->
-    <!--  -->
-
     <q-intersection
       v-for="plan in planlist"
       :key="plan.planId"
@@ -168,8 +114,6 @@ const onCardClick = async (pid) => {
   border-radius: 0.5rem;
 }
 .example-item {
-  /* height: 390px;
-  */
   width: 40%;
 }
 </style>

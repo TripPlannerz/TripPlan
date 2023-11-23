@@ -7,7 +7,6 @@ import MapTest from "src/layouts/MapTest.vue";
 <template>
   <q-layout view="hHh lpR fFf">
     <TheMapHeader />
-
     <q-page-container>
       <!-- <router-view /> -->
       <MapTest />

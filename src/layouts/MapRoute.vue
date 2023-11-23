@@ -47,6 +47,10 @@ import { makePlan } from "src/apis/plan";
 import LoginComponent from "../components/user/LoginComponent.vue";
 import UserFormComponent from "../components/user/UserFormComponent.vue";
 
+const props = defineProps({
+  step: Number,
+});
+console.log("maproute", props.step);
 const infowindow = ref(null);
 const store = useSearchListStore();
 const keystore = useSearchKeywordStore();

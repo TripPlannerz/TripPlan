@@ -89,73 +89,96 @@ watchEffect(() => {
 onMounted(() => {
   console.log("SHSEHHSESEE");
 });
+
+/* scroll style */
+const thumbStyle = {
+  right: "4px",
+  borderRadius: "5px",
+  backgroundColor: "#ffc436",
+  width: "5px",
+  opacity: 0.75,
+};
+
+const barStyle = {
+  right: "2px",
+  borderRadius: "9px",
+  backgroundColor: "#ffc436",
+  width: "9px",
+  opacity: 0.2,
+};
 </script>
 
 <template>
-  <q-header class="bg-primary text-white">
-    <q-toolbar>
-      <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-
-      <q-toolbar-title>
-        <q-avatar>
-          <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-        </q-avatar>
-        Title
-      </q-toolbar-title>
-
-      <q-btn dense flat round icon="menu" @click="toggleRightDrawer" /> -->
-      <!-- <q-btn dense flat round icon="menu" @click="toggleRightDrawer" /> -->
-    </q-toolbar>
-  </q-header>
-
   <q-drawer
     v-model="leftDrawerOpen"
     @click.capture="drawerClick"
-    :width="300"
     :breakpoint="400"
     bordered
     side="left"
     show-if-above
+    class="q-drawer"
   >
-    <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-      <q-item-label header>
-        여행지
-        <div class="text-h6">{{ planstore.places.region }}</div>
-      </q-item-label>
+    <q-item-label header>
+      여행지
+      <div class="text-h6">{{ planstore.places.region }}</div>
+    </q-item-label>
 
-      <q-item-label header>
-        여행기간<br />
-        {{ planstore.dates.from }} - {{ planstore.dates.to }}
-      </q-item-label>
-      <div>
-        <form @submit.prevent="searchPlaces">
-          <!-- TODO:  -->
-          <q-input v-model="keyword" filled type="search" hint="Search">
-            <template v-slot:append>
-              <q-icon name="search" @click="searchPlaces" />
-            </template>
-          </q-input>
+    <q-item-label header>
+      여행기간<br />
+      {{ planstore.dates.from }} - {{ planstore.dates.to }}
+    </q-item-label>
+    <div>
+      <form @submit.prevent="searchPlaces">
+        <!-- TODO:  -->
+        <q-input
+          bottom-slots
+          v-model="keyword"
+          maxlength="10"
+          dense
+          @click="searchPlaces"
+        >
+          <template v-slot:before>
+            <q-icon name="place" />
+          </template>
 
-          <input type="text" v-model="keyword" id="keyword" size="15" />
-          <button type="submit">검색</button>
-        </form>
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
-      </div>
-
-      <q-tabs
-        v-model="lefttab"
+          <template v-slot:append>
+            <q-icon
+              v-if="keyword !== ''"
+              name="close"
+              @click="keyword = ''"
+              class="cursor-pointer"
+            />
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </form>
+      <q-btn
+        class="float-right"
         dense
-        class="text-grey"
-        active-color="primary"
-        indicator-color="primary"
-        narrow-indicator
-      >
-        <q-tab name="places" label="장소 선택" />
-        <!-- <q-tab name="rooms" label="숙소" /> -->
-      </q-tabs>
+        flat
+        round
+        icon="menu"
+        @click="toggleRightDrawer"
+      />
+    </div>
 
-      <q-separator />
-
+    <q-tabs
+      v-model="lefttab"
+      dense
+      class="text-grey"
+      active-color="primary"
+      indicator-color="primary"
+      narrow-indicator
+    >
+      <q-tab name="places" label="장소 선택" />
+    </q-tabs>
+    <q-separator />
+    <q-scroll-area
+      class="fit"
+      :thumb-style="thumbStyle"
+      :bar-style="barStyle"
+      style="height: 50vh"
+    >
       <q-tab-panels v-model="lefttab">
         <q-tab-panel name="places">
           <div>
@@ -181,7 +204,6 @@ onMounted(() => {
               </q-item-section>
 
               <q-item-section side top>
-                <!-- <q-icon name="star" color="yellow" /> -->
                 <q-btn
                   @click="addToAddList(item)"
                   round
@@ -244,7 +266,12 @@ onMounted(() => {
     :push="true"
     show-if-above
   >
-    <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+    <q-scroll-area
+      class="fit"
+      :thumb-style="thumbStyle"
+      :bar-style="barStyle"
+      style="height: 50vh"
+    >
       <q-item-label header> 추가된 리스트 </q-item-label>
 
       <q-tabs
@@ -274,7 +301,6 @@ onMounted(() => {
               </q-item-section>
 
               <q-item-section side top>
-                <!-- <q-icon name="star" color="yellow" /> -->
                 <q-btn
                   @click="removeFromAddList(item)"
                   round
@@ -293,7 +319,6 @@ onMounted(() => {
         </q-tab-panel>
 
         <q-tab-panel name="rooms">
-          <!-- <div class="text-h6">Rooms</div> -->
           <p>{{ keystore.getRooms }} / {{ planstore.days }}</p>
           <q-list v-for="item in keystore.addlist" :key="item.id">
             <q-item v-if="item.category_group_code === 'AD5'">
@@ -306,7 +331,6 @@ onMounted(() => {
               </q-item-section>
 
               <q-item-section side top>
-                <!-- <q-icon name="star" color="yellow" /> -->
                 <q-btn
                   @click="removeFromAddList(item)"
                   round
@@ -329,11 +353,20 @@ onMounted(() => {
 </template>
 
 <style lang="css" scoped>
+* {
+  overflow: hidden;
+}
 .q-header {
   visibility: hidden;
   height: 1px;
 }
 .q-btn {
   margin: 10px;
+}
+
+.q-drawer {
+  border: 1px solid black;
+  height: 80px;
+  margin: auto 0;
 }
 </style>

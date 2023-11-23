@@ -70,6 +70,23 @@ const addToAddList = (i) => {
 //   });
 //   currentRoomCnt.value = tmpcnt;
 // });
+
+/* scroll style */
+const thumbStyle = {
+  right: "4px",
+  borderRadius: "5px",
+  backgroundColor: "#ffc436",
+  width: "5px",
+  opacity: 0.75,
+};
+
+const barStyle = {
+  right: "2px",
+  borderRadius: "9px",
+  backgroundColor: "#ffc436",
+  width: "9px",
+  opacity: 0.2,
+};
 </script>
 
 <template>
@@ -86,34 +103,46 @@ const addToAddList = (i) => {
     side="left"
     show-if-above
   >
-    <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-      <q-item-label header>
-        여행지
-        <div class="text-h6">{{ planstore.places.region }}</div>
-      </q-item-label>
+    <q-item-label header>
+      여행지
+      <div class="text-h6">{{ planstore.places.region }}</div>
+    </q-item-label>
 
-      <q-item-label header>
-        여행기간<br />
-        {{ planstore.dates.from }} - {{ planstore.dates.to }}
-      </q-item-label>
-      <div>
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
-      </div>
-
-      <q-tabs
-        v-model="lefttab"
+    <q-item-label header>
+      여행기간<br />
+      {{ planstore.dates.from }} - {{ planstore.dates.to }}
+    </q-item-label>
+    <div>
+      <q-btn
+        class="float-right"
         dense
-        class="text-grey"
-        active-color="primary"
-        indicator-color="primary"
-        narrow-indicator
-      >
-        <q-tab name="places" label="장소 선택" />
-        <!-- <q-tab name="rooms" label="숙소" /> -->
-      </q-tabs>
+        flat
+        round
+        icon="add_circle_outline"
+        @click="toggleRightDrawer"
+        style="margin: 0; margin-right: 0.5rem"
+      />
+    </div>
 
-      <q-separator />
+    <q-tabs
+      v-model="lefttab"
+      dense
+      class="text-grey"
+      active-color="primary"
+      indicator-color="primary"
+      narrow-indicator
+    >
+      <q-tab name="places" label="일정 편집" />
+      <!-- <q-tab name="rooms" label="숙소" /> -->
+    </q-tabs>
 
+    <q-separator />
+    <q-scroll-area
+      class="fit"
+      :thumb-style="thumbStyle"
+      :bar-style="barStyle"
+      style="height: 50vh"
+    >
       <q-tab-panels v-model="lefttab">
         <q-tab-panel v-if="keystore.clickflag" name="places">
           <EditPlanHistory />
@@ -132,33 +161,56 @@ const addToAddList = (i) => {
     :breakpoint="400"
     bordered
     side="right"
-    show-if-above
   >
-    <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-      <q-item-label header>
-        추가 여행지
-        <div class="text-h6">아 맞다 여기도 가야지</div>
-      </q-item-label>
+    <q-item-label header>
+      추가 여행지
+      <div class="text-h6">아 맞다 여기도 가야지</div>
+    </q-item-label>
 
-      <q-tabs
-        v-model="lefttab"
+    <q-tabs
+      v-model="lefttab"
+      dense
+      class="text-grey"
+      active-color="primary"
+      indicator-color="primary"
+      narrow-indicator
+    >
+      <q-tab name="places" label="장소 선택" />
+      <!-- <q-tab name="rooms" label="숙소" /> -->
+    </q-tabs>
+
+    <q-separator />
+    <form @submit.prevent="searchPlaces" class="q-ma-sm">
+      <!-- TODO:  -->
+      <q-input
+        bottom-slots
+        v-model="keyword"
+        maxlength="10"
         dense
-        class="text-grey"
-        active-color="primary"
-        indicator-color="primary"
-        narrow-indicator
+        @click="searchPlaces"
       >
-        <q-tab name="places" label="장소 선택" />
-        <!-- <q-tab name="rooms" label="숙소" /> -->
-      </q-tabs>
+        <template v-slot:before>
+          <q-icon name="place" />
+        </template>
 
-      <q-separator />
-      <q-input v-model="keyword" filled type="search" hint="Search">
         <template v-slot:append>
-          <q-icon name="search" @click="searchPlaces" />
+          <q-icon
+            v-if="keyword !== ''"
+            name="close"
+            @click="keyword = ''"
+            class="cursor-pointer"
+          />
+          <q-icon name="search" />
         </template>
       </q-input>
+    </form>
 
+    <q-scroll-area
+      class="fit"
+      :thumb-style="thumbStyle"
+      :bar-style="barStyle"
+      style="height: 60vh"
+    >
       <q-tab-panels v-model="lefttab">
         <q-tab-panel name="places">
           <q-list v-for="item in store.searchlist" :key="item.id">

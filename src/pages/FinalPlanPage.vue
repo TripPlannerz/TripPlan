@@ -3,12 +3,15 @@ import TheMapHeader from "src/components/common/TheMapHeader.vue";
 import MapRoutePage from "./MapRoutePage.vue";
 import EditPlan from "src/components/plan/EditPlan.vue";
 import TheFinalHeader from "src/components/common/TheFinalHeader.vue";
+defineProps({
+  step: Number,
+});
 </script>
 
 <template>
   <div>
     <q-layout view="hHh lpR fFf">
-      <TheFinalHeader />
+      <TheFinalHeader :step="step" />
 
       <q-page-container>
         <!-- <router-view /> -->
