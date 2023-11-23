@@ -1,10 +1,37 @@
 <template>
   <div>
     <div id="map2"></div>
-    <button @click="displayMarker(keystore.getSavedList)">marker set 1</button>
-    <button @click="routeClick()">marker set 1</button>
-    <button @click="routeDel()">marker set 1</button>
+
+    <button @click="planPost()">marker set 1</button>
+    <q-btn @click="isOpen = true">저장</q-btn>
     <!-- <button @click="">marker set 1</button> -->
+    <q-dialog v-model="isOpen" class="z-top">
+      <q-card class="fixed-center" style="min-width: 600px">
+        <q-card-section class="col items-center">
+          <div>
+            <q-btn icon="close" flat round dense v-close-popup />
+          </div>
+
+          <LoginComponent
+            v-if="!userInfo"
+            @onClose="isOpen = false"
+            @openRegister="openLogin = false"
+          />
+          <div v-else :type="'register'" @onClose="isOpen = false">
+            <div class="text-h5">제목을 입력하세요.</div>
+            <div class="flex">
+              <q-input v-model="text" :dense="dense" />
+              <q-btn>추가</q-btn>
+            </div>
+          </div>
+        </q-card-section>
+
+        <!-- <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="Turn on Wifi" color="primary" v-close-popup />
+        </q-card-actions> -->
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -13,16 +40,25 @@ import { toRaw, ref, onMounted, watch, watchEffect } from "vue";
 import { useSearchListStore } from "src/stores/example-store";
 import { useSearchKeywordStore } from "src/stores/searchkeyword";
 import { usePlanStore } from "src/stores/plan";
+import { useMemberStore } from "src/stores/member";
+import { storeToRefs } from "pinia";
+import { makePlan } from "src/apis/plan";
+import LoginComponent from "../components/user/LoginComponent.vue";
+import UserFormComponent from "../components/user/UserFormComponent.vue";
 
 const infowindow = ref(null);
 const store = useSearchListStore();
 const keystore = useSearchKeywordStore();
 const destinationstore = usePlanStore();
+const memberstore = useMemberStore();
 const customlist = ref([]);
 
 const routetest = ref([]);
 const routeall = ref([]);
 //const keyword = ref();
+
+const { userInfo } = storeToRefs(memberstore);
+const { dates, places } = storeToRefs(destinationstore);
 
 const routecolor = ["#CC0000", "#6666CC", "#99FF00"];
 
@@ -40,6 +76,22 @@ let polyarr = [];
 let markers = ref([]);
 
 const keyword = ref("이태원");
+const plandata = ref({
+  region: places.value.region,
+  startDate: dates.value.from,
+  endDate: dates.value.to,
+  userId: userInfo.value?.userId,
+  userName: userInfo.value?.userName,
+});
+
+const isOpen = ref(false);
+
+const planPost = async () => {
+  console.log(plandata.value, "PD");
+
+  await makePlan(plandata.value);
+};
+
 const routeDel = () => {
   // if (routeall.value) {
   //   await polyDelete(routeall.value);
@@ -95,6 +147,7 @@ const routeClick = async () => {
     routeall.value.push(routetest.value);
     console.log(`After getCarDirection ${i}`);
   }
+  await displayMarker(keystore.savedlist);
 
   console.log(routeall.value, "routeall");
 };
@@ -110,27 +163,27 @@ const initializeMap = () => {
   ps = new kakao.maps.services.Places();
 };
 
-//   watchEffect(() => {
-//     console.log("myData 값이 변경되었습니다. 새로운 값:", keystore.keywordlist);
-//     keyword.value = keystore.keywordlist;
-//     console.log(keyword.value);
+// watchEffect(() => {
+//   console.log("myData 값이 변경되었습니다. 새로운 값:", keystore.keywordlist);
+//   keyword.value = keystore.keywordlist;
+//   console.log(keyword.value);
 
-//     if (ps && ps.keywordSearch) {
-//       ps.keywordSearch(keyword.value, placesSearchCB);
-//     } else {
-//       console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
-//     }
+//   // if (ps && ps.keywordSearch) {
+//   //   //ps.keywordSearch(keyword.value, placesSearchCB);
+//   // } else {
+//   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
+//   // }
 
-//     // 추가로 필요한 로직 수행
-//   });
+//   // 추가로 필요한 로직 수행
+// });
 
-//   const placesSearchCB = (data, status, pagination) => {
-//     //ㄴ나중에 status 처리 해야함
-//     console.log(data);
-//     store.savelist(data);
+// const placesSearchCB = (data, status, pagination) => {
+//   //ㄴ나중에 status 처리 해야함
+//   console.log(data);
+//   store.savelist(data);
 
-//     // displayMarker(data);
-//   };
+//   // displayMarker(data);
+// };
 
 const initMap = () => {
   const container = document.getElementById("map2");
@@ -204,6 +257,7 @@ const displayMarker = (markerPositions) => {
   if (markers.value.length > 0) {
     markers.value.forEach((marker) => marker.setMap(null));
   }
+  console.log(markerPositions, "MP");
 
   markerPositions = markerPositions.flat();
 
@@ -352,7 +406,7 @@ async function getCarDirection(pos, day) {
 }
 
 watchEffect(() => {
-  customlist.value = keystore.savedlist;
+  // customlist.value = keystore.savedlist;
   // console.log(customlist.value);
   // if (ps && ps.keywordSearch) {
   //   ps.keywordSearch(customlist.value, placesSearchCB);
@@ -360,7 +414,7 @@ watchEffect(() => {
   //   console.error("ps 객체 또는 keywordSearch 메소드가 정의되지 않았습니다.");
   // }
 
-  displayMarker(keystore.savedlist);
+  // displayMarker(keystore.savedlist);
   routeClick();
   routeDel();
   // 추가로 필요한 로직 수행

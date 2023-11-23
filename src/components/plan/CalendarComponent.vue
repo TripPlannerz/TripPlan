@@ -34,7 +34,7 @@ const countDays = () => {
   var diff = Math.abs(end.getTime() - start.getTime());
   diff = Math.ceil(diff / (1000 * 3600 * 24));
 
-  return diff + 1;
+  return diff;
 };
 </script>
 

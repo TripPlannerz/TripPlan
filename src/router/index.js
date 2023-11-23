@@ -10,39 +10,43 @@ const router = createRouter({
     // },
     {
       path: "/",
+      name: "main",
       component: () => import("pages/IndexPage.vue"),
       // component: () => import("layouts/MainLayout.vue"),
       // children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
     },
     {
       path: "/plan",
+      name: "plan",
       component: () => import("pages/PlanPage.vue"),
       // children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
     },
 
     {
       path: "/route",
+      name: "route",
       component: () => import("pages/MapRoutePage.vue"),
     },
-    {
-      path: "/login",
-      component: () => import("pages/LoginPage.vue"),
-    },
-    {
-      path: "/signin",
-      component: () => import("pages/SigninPage.vue"),
-    },
+
     {
       path: "/mypage",
+      name: "user-mypage",
       component: () => import("pages/UserInfoPage.vue"),
     },
     {
       path: "/map",
+      name: "map",
       component: () => import("layouts/MapLayout.vue"),
     },
     {
       path: "/test",
-      component: () => import("pages/MapPage.vue"),
+      name: "test",
+      component: () => import("layouts/HistoryLayout.vue"),
+    },
+    {
+      path: "/:error",
+      name: "error",
+      component: () => import("pages/ErrorNotFound.vue"),
     },
   ],
 });

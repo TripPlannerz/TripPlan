@@ -45,6 +45,8 @@ export const useSearchKeywordStore = defineStore("searchkeyword", {
         x: item.x,
         y: item.y,
       }));
+
+      console.log(this.selectedlist, "*&%$%^&UHJNJSAHDVGHAHSDBJASDHNJ");
     },
   },
 });
