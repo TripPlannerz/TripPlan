@@ -19,10 +19,14 @@ async function getPlanDetail(pid) {
   return await local.get(`/planApi/plan/${pid}`);
 }
 
+async function deletePlan(pid) {
+  return await local.delete(`/planApi/plan/${pid}`);
+}
+
 async function getSchedule(pid) {
   return await local.get(`/scheduleApi/schedule/${pid}`);
   // .then((r) => console.log(r, "getSche"))
   // .catch((e) => console.log(e));
 }
 
-export { getPlanList, getMyPlanList, getPlanDetail, getSchedule };
+export { getPlanList, getMyPlanList, getPlanDetail, getSchedule, deletePlan };

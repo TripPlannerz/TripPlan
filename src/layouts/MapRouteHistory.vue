@@ -33,8 +33,9 @@
           <div v-else :type="'register'" @onClose="isOpen = false">
             <div class="text-h5 q-my-sm">제목을 입력하세요.</div>
             <div class="flex">
-              <q-input v-model="text" :dense="dense" />
-              <q-btn>추가</q-btn>
+              <q-input v-model="plantitle" />
+              <q-btn @click="planPost">추가</q-btn>
+              {{ plantitle }}
             </div>
           </div>
         </q-card-section>
@@ -80,6 +81,7 @@ const markerPositions1 = ref(keystore.savedlist);
 
 const x = ref("");
 const y = ref("");
+const plantitle = ref("");
 
 let map;
 let geocoder;
@@ -90,6 +92,7 @@ let markers = ref([]);
 
 const keyword = ref("이태원");
 const plandata = ref({
+  title: plantitle.value,
   region: places.value.region,
   startDate: dates.value.from,
   endDate: dates.value.to,
@@ -102,7 +105,14 @@ const isOpen = ref(false);
 const planPost = async () => {
   console.log(plandata.value, "PD");
 
-  await makePlan(plandata.value);
+  await makePlan({
+    title: plantitle.value,
+    region: places.value.region,
+    startDate: dates.value.from,
+    endDate: dates.value.to,
+    userId: userInfo.value?.userId,
+    userName: userInfo.value?.userName,
+  });
 };
 
 const routeDel = () => {

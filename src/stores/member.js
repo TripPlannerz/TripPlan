@@ -13,6 +13,7 @@ export const useMemberStore = defineStore("memberStore", () => {
   const isLoginError = ref(false);
   const userInfo = ref(null);
   const isValidToken = ref(false);
+  const myPageFlag = ref(false);
 
   const userLogin = async (loginUser) => {
     await userConfirm(
@@ -139,6 +140,7 @@ export const useMemberStore = defineStore("memberStore", () => {
     isLoginError,
     userInfo,
     isValidToken,
+    myPageFlag,
     userLogin,
     getUserInfo,
     tokenRegenerate,
